@@ -4,6 +4,8 @@ Mine within your space to upgrade your gear before the walls fall. The NPCs outs
 
 This project has been in an on/off development state since sometime mid-to-late 2021. The base game was completed within a few weeks, but many updates and improvements to the game have come out since then. Latest update was done in October 2022, adding to Walls SG the special modifier gamemode and all the custom classes, support for my HerobrinePVP-CORE's new leveling system, and various other improvements.
 
+So yeah, if you see something looking a little wonky in the code, chances are I haven't touched that part for about a year.
+
 
 Dependencies:
 
