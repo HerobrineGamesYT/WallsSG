@@ -1,0 +1,6 @@
+main: net.herobrine.wallsg.WallsMain
+name: WallsSG
+version: 1.5
+commands:
+  wsgdev:
+    description: Walls SG Dev Tools

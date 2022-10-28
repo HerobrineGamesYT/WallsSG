@@ -1,0 +1,111 @@
+required-players: 2
+max-players: 20
+countdown-seconds: 15
+lobby-spawn: 
+  world: 'hypixelhub'
+  x: 189
+  y: 64
+  z: 4
+  pitch: 1
+  yaw: 90
+lobby-npc-spawn:
+  world: 'hypixelhub'
+  x: 11.5
+  y: 80
+  z: 22.5
+  pitch: 0
+  yaw:  -90
+arenas:
+  '2':
+    world: 'wallsMap'
+    x: 484
+    y: 150
+    z: 452
+    pitch: 0
+    yaw: 0
+    first-position:
+      x: 419
+      y: 172
+      z: 523
+    second-position:
+      x: 540
+      y: 74
+      z: 395  
+    red-spawn:
+      world: 'wallsMap'
+      x: 469
+      y: 103
+      z: 472
+      pitch: 1
+      yaw: 52
+    blue-spawn:
+      world: 'wallsMap'
+      x: 503
+      y: 103
+      z: 480
+      pitch: -3
+      yaw: -40
+    yellow-spawn:
+      world: 'wallsMap'
+      x: 500
+      y: 103
+      z: 432
+      pitch: -5
+      yaw: -129
+    green-spawn:
+      world: 'wallsMap'
+      x: 467
+      y: 103
+      z: 434
+      pitch: 1
+      yaw: 141
+    red-npc-spawn:
+      world: 'wallsMap'
+      x: 455.5
+      y: 108
+      z: 484.5
+      pitch: 0
+      yaw: 180
+    blue-npc-spawn:
+      world: 'wallsMap'
+      x: 513.5
+      y: 108
+      z: 484.5
+      pitch: 0
+      yaw: 90
+    yellow-npc-spawn:
+      world: 'wallsMap'
+      x: 514.5
+      y: 108
+      z: 420.5 
+      pitch: 0
+      yaw: 0
+    green-npc-spawn:
+      world: 'wallsMap'
+      x: 455.5
+      y: 108
+      z: 420.5
+      pitch: 0
+      yaw: -90      
+    border:
+     world: 'wallsMap'
+     x: 484.5 
+     z: 452.5
+    center-chest-spawning:
+     maxId: 3
+     '0':
+       x: 482.5 
+       y: 103.0
+       z: 453.5
+     '1':
+       x: 482.5 
+       y: 103.0
+       z: 450.0
+     '2':
+       x: 485.5
+       y: 103.0
+       z: 450.5
+     '3':
+       x: 485.5
+       y: 103.0
+       z: 453.5     
