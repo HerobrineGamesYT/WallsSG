@@ -10,13 +10,14 @@ So yeah, if you see something looking a little wonky in the code, chances are I 
 Dependencies:
 
 - [Mine] HerobrinePVP-CORE (Main core. It's the backbone for all my custom plugins within this setup.)
--[Mine] GameCore (Lots of minigame-related functions, configuration settings, and arena management. It's the backbone for all my minigame plugins within this setup.)
+- [Mine] GameCore (Lots of minigame-related functions, configuration settings, and arena management. It's the backbone for all my minigame plugins within this setup.)
 - [3rd Party] Citizens (NPCs - while used in this minigame for the shop, it's used all around the whole server setup.)
 - [3rd Party] WorldEdit (Helps wtih world-related tasks, such as making the walls fall, replacing placeholder blocks, or placing custom objects via schematics.)
 - [3rd Party] NoteBlockAPI (GameCore/HerobrinePVP-CORE dependency - plays custom NoteBlock music.)
 
-
 Custom Gameplay Mechanics:
+
+A video showcase of *some* of the below mechanics can be seen here: https://streamable.com/hkt2kg (Aplogies for any recording glitches)
 
 - Randomized Ore Generation - When the game starts, placeholder blocks are replaced with certain ore types at random. Some ores are guranteed, some are randomized! Different ore types are more common than others in different sections of each team's cave. Each team's cave has the same amount of resources.
   - Key (common->rarest): 
