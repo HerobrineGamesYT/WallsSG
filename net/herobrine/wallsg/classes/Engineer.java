@@ -65,6 +65,16 @@ public class Engineer extends Class {
     BukkitTask runnable;
     BukkitTask expiryRunnable;
 
+    SkullMaker cannonItem = new SkullMaker(ChatColor.GOLD + "Placeable Cannon", Arrays.asList(ChatColor.GREEN + "Place down this cannon somewhere and it will",
+            ChatColor.GREEN + "start shooting nearby enemies automatically!", " ", ChatColor.GREEN + "You pick up your cannon at any time by",
+            ChatColor.GREEN + "using the "
+                    + ChatColor.RED + "Callback Device", ChatColor.GREEN + "in your inventory.", "", ChatColor.DARK_GRAY + "Cooldown: " + ChatColor.AQUA + "10s", ChatColor.DARK_GRAY + "Lifetime: " + ChatColor.AQUA + expiresIn + "s"),
+            "http://textures.minecraft.net/texture/22523e15e9986355a1f851f43f750ee3f23c89ae123631da241f872ba7a781");
+    SkullMaker callback = new SkullMaker(ChatColor.RED + "Callback Device", Arrays.asList(ChatColor.GREEN + "Right click with this in your hand to",
+            ChatColor.GREEN + "call back your placed cannon!"),
+            "http://textures.minecraft.net/texture/a4cc7efb63ee58a06e0ebbef7b7e9e858ffa178ca5c6271c8969e88e05ecf033");
+
+
     public Engineer(UUID uuid) {
         super(uuid, ClassTypes.ENGINEER);
     }
@@ -117,17 +127,11 @@ public class Engineer extends Class {
         arena = Manager.getArena(player);
 
 
-        SkullMaker cannon = new SkullMaker(ChatColor.GOLD + "Placeable Cannon", Arrays.asList(ChatColor.GREEN + "Place down this cannon somewhere and it will",
-                ChatColor.GREEN + "start shooting nearby enemies automatically!", " ", ChatColor.GREEN + "You pick up your cannon at any time by",
-                ChatColor.GREEN + "using the "
-                        + ChatColor.RED + "Callback Device", ChatColor.GREEN + "in your inventory.", "", ChatColor.DARK_GRAY + "Cooldown: " + ChatColor.AQUA + "10s", ChatColor.DARK_GRAY + "Lifetime: " + ChatColor.AQUA + expiresIn + "s"),
-                "http://textures.minecraft.net/texture/22523e15e9986355a1f851f43f750ee3f23c89ae123631da241f872ba7a781");
 
-        player.getInventory().addItem(cannon.getSkull());
 
-        SkullMaker callback = new SkullMaker(ChatColor.RED + "Callback Device", Arrays.asList(ChatColor.GREEN + "Right click with this in your hand to",
-                ChatColor.GREEN + "call back your placed cannon!"),
-                "http://textures.minecraft.net/texture/a4cc7efb63ee58a06e0ebbef7b7e9e858ffa178ca5c6271c8969e88e05ecf033");
+        player.getInventory().addItem(cannonItem.getSkull());
+
+
     }
 
 
@@ -140,7 +144,7 @@ public class Engineer extends Class {
             expiryRunnable.cancel();
             expiresIn = -1;
             // this undoSession method only runs when the arena resets, so we want to ensure this runnable won't run anything else by accident by setting the time to -1,
-            // even after cancelling it could still run 1 more time if the timing is perfect otherwise.
+            // even after cancelling it could still run 1 more time if the timing is perfect.
             expiryRunnable = null;
         }
         if(session != null) session.undo(session);
@@ -271,6 +275,7 @@ public class Engineer extends Class {
 
                 if (expiresIn == 0) {
                     cancel();
+                    expiresIn = 20;
                     session.undo(session);
                     stopFiring();
                     expiryStatus.remove();
@@ -281,21 +286,15 @@ public class Engineer extends Class {
                     hitSpeedStatus = null;
                     damageStatus = null;
                     hologram = null;
-
-                    expiresIn = 20;
                     player.playSound(player.getLocation(), Sound.NOTE_BASS_GUITAR, 1f, 1f);
                     cooldown = System.currentTimeMillis();
                     player.sendMessage(ChatColor.RED + "Your cannon has expired!");
                     GameCoreMain.getInstance().sendActionBar(player,ChatColor.RED + "Your cannon has expired!");
-                    SkullMaker cannon = new SkullMaker(ChatColor.GOLD + "Placeable Cannon", Arrays.asList(ChatColor.GREEN + "Place down this cannon somewhere and it will",
-                            ChatColor.GREEN + "start shooting nearby enemies automatically!", " ", ChatColor.GREEN + "You pick up your cannon at any time by",
-                            ChatColor.GREEN + "using the "
-                                    + ChatColor.RED + "Callback Device", ChatColor.GREEN + "in your inventory.", "", ChatColor.DARK_GRAY + "Cooldown: " + ChatColor.AQUA + "10s", ChatColor.DARK_GRAY + "Lifetime: " + ChatColor.AQUA + expiresIn + "s"),
-                            "http://textures.minecraft.net/texture/22523e15e9986355a1f851f43f750ee3f23c89ae123631da241f872ba7a781");
+
                     player.getInventory().remove(Material.SKULL_ITEM);
                     player.getInventory().remove(Material.SKULL_ITEM);
                     hasCannonPlaced = false;
-                    player.getInventory().addItem(cannon.getSkull());
+                    player.getInventory().addItem(cannonItem.getSkull());
 
                     expiryRunnable = null;
                     return;
@@ -468,9 +467,6 @@ public class Engineer extends Class {
                 try {
                     CuboidClipboard clipboard = MCEditSchematicFormat.getFormat(file).load(file);
 
-                    //int data;
-                    //if(arena.getTeam(player).equals(Teams.BLUE)) data =
-                    //clipboard.getBlock().setData();
 
                     String direction = getCardinalDirection(player);
                     clipboard.rotate2D(getAngle(direction));
@@ -526,9 +522,6 @@ public class Engineer extends Class {
                     cannon.setShootLocation(getFiringLocation(pasteLoc, direction));
 
 
-                    SkullMaker callback = new SkullMaker(ChatColor.RED + "Callback Device", Arrays.asList(ChatColor.GREEN + "Right click with this in your hand to",
-                            ChatColor.GREEN + "call back your placed cannon!"),
-                            "http://textures.minecraft.net/texture/a4cc7efb63ee58a06e0ebbef7b7e9e858ffa178ca5c6271c8969e88e05ecf033");
                     if (e.getItemInHand().getType().equals(Material.AIR) || e.getItemInHand().getType().equals(Material.SKULL) ||
                             e.getItemInHand().getType().equals(Material.SKULL_ITEM)) player.setItemInHand(callback.getSkull());
                    else  player.getInventory().addItem(callback.getSkull());
@@ -582,14 +575,10 @@ public class Engineer extends Class {
                 e.getPlayer().sendMessage(ChatColor.RED + "Your cannon has been removed!");
                 cooldown = System.currentTimeMillis();
                 hasCannonPlaced = false;
-                SkullMaker cannon = new SkullMaker(ChatColor.GOLD + "Placeable Cannon", Arrays.asList(ChatColor.GREEN + "Place down this cannon somewhere and it will",
-                        ChatColor.GREEN + "start shooting nearby enemies automatically!", " ", ChatColor.GREEN + "You pick up your cannon at any time by",
-                        ChatColor.GREEN + "using the "
-                                + ChatColor.RED + "Callback Device", ChatColor.GREEN + "in your inventory.", "", ChatColor.DARK_GRAY + "Cooldown: " + ChatColor.AQUA + "10s", ChatColor.DARK_GRAY + "Lifetime: " + ChatColor.AQUA + expiresIn + "s"),
-                        "http://textures.minecraft.net/texture/22523e15e9986355a1f851f43f750ee3f23c89ae123631da241f872ba7a781");
+
                 if (e.getItem().getType().equals(Material.AIR) || e.getItem().getType().equals(Material.SKULL) ||
-                        e.getItem().getType().equals(Material.SKULL_ITEM)) e.getPlayer().setItemInHand(cannon.getSkull());
-                else  e.getPlayer().getInventory().addItem(cannon.getSkull());
+                        e.getItem().getType().equals(Material.SKULL_ITEM)) e.getPlayer().setItemInHand(cannonItem.getSkull());
+                else  e.getPlayer().getInventory().addItem(cannonItem.getSkull());
         }
 
         }

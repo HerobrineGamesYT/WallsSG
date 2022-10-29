@@ -424,7 +424,7 @@ public enum ShopItems {
 
             int newPrice = getPrice(item) - ((int)Math.round(getPrice(item)*ClassTypes.ECONOMIST.getShopDiscount()));
             newLore.addAll(Arrays.asList(" ", ChatColor.WHITE + "Cost: " + ChatColor.STRIKETHROUGH + getPrice(item)+ ChatColor.RESET + " " + ChatColor.WHITE + newPrice + " " + shopType.getCurrencyDisplayName()));
-            if (item.hasCraftFee) newLore.add(ChatColor.WHITE + "Craft Fee: " + getCraftFee(item).getValue() + " " + ChatColor.YELLOW + getCraftFee(item).getKey());
+            if (item.hasCraftFee) newLore.add(ChatColor.WHITE + "Craft Fee: " + getCraftFee(item).getValue() + " " + ChatColor.YELLOW + Game.getFriendlyName(getCraftFee(item).getKey()));
             return newLore;
         }
 

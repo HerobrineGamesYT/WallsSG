@@ -1229,6 +1229,12 @@ public class Game {
 						|| arena.getState().equals(GameState.LIVE_ENDING)) {
 					cancel();
 				}
+
+				if (seconds < 0) {
+					cancel();
+					return;
+				}
+
 				for (UUID uuid : arena.getPlayers()) {
 					Player player = Bukkit.getPlayer(uuid);
 					String time = String.format("%02d:%02d", seconds / 60, seconds % 60);
