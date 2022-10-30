@@ -2,9 +2,9 @@
 Mine within your space to upgrade your gear before the walls fall. The NPCs outside of each team cave will have special items for you to purchase! Last team standing wins. Also supports player voting for a custom MODIFIER gamemode that allows players to select a custom class to play, each with a special ability.
 
 
-This project has been in an on/off development state since sometime mid-to-late 2021. The base game was completed within a few weeks, but many updates and improvements to the game have come out since then. Latest update was done in October 2022, adding to Walls SG the special modifier gamemode and all the custom classes, support for my HerobrinePVP-CORE's new leveling system, and various other improvements.
+This project has officially been in an on/off development state since sometime mid-to-late 2021. Though this was the first minigame that I ever WANTED to develop and made a super bare bones shell of a couple years prior but never finished. The base game was officially completed within a few weeks, but many updates and improvements to the game have come out since then. Latest update was done in October 2022, adding to Walls SG the special modifier gamemode and all the custom classes, support for my HerobrinePVP-CORE's new leveling system, and various other improvements.
 
-So yeah, if you see something looking a little wonky in the code, chances are I haven't touched that part for about a year and it will get refactored in the future.
+So yeah, if you see something looking wonky in the code, chances are I haven't touched that part for about a year+ and it will get refactored in the future.
 
 
 Dependencies:
