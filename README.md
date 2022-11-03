@@ -17,7 +17,7 @@ Dependencies:
 
 Custom Gameplay Mechanics:
 
-A video showcase of *some* of the below mechanics can be seen here: https://streamable.com/hkt2kg (Aplogies for any recording glitches)
+A video showcase of *some* of the below mechanics can be seen here: https://streamable.com/hkt2kg (Apologies for any recording glitches)
 
 - Randomized Ore Generation - When the game starts, placeholder blocks are replaced with certain ore types at random. Some ores are guranteed, some are randomized! Different ore types are more common than others in different sections of each team's cave. Each team's cave has the same amount of resources.
   - Key (common->rarest): 
@@ -43,7 +43,7 @@ A video showcase of *some* of the below mechanics can be seen here: https://stre
   ![image](https://user-images.githubusercontent.com/74119793/198731246-9ee6dca2-c6bb-4745-aecf-f16731874778.png)
 
   - Miner: 15% Chance to DOUBLE mined ore drops. Comes with an enchanted Diamond Pickaxe on spawn.
-  - Engineer: Place a custom cannon object that can shoot enemy players within a certain range and deal damage to them. The cannon expires after 20s and is automatically removed. The player can remove the cannon at any time using the Callback Device in their inventory while a cannon is placed down.
+  - Engineer: Place a custom cannon object that can shoot enemy players within a certain range and deal damage to them. The cannon expires after 20s and is automatically removed. The player can remove the cannon at any time using the Callback Device in their inventory while a cannon is placed down. There's a 1.5s delay before you can actually call the cannon back once it is placed down to prevent accidental callbacks.
   
   ![image](https://user-images.githubusercontent.com/74119793/198731320-49fc391d-45f1-4ce1-ba2b-75afd746127d.png)
 
