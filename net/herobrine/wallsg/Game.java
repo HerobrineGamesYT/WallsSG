@@ -86,7 +86,6 @@ public class Game {
 	}
 
 	public static List<UUID> getAlivePlayers() {
-
 		return alivePlayers;
 	}
 
@@ -102,13 +101,9 @@ public class Game {
 
 				Player player = (Player) Bukkit.getPlayer(uuid);
 
-				if (arena.getTeam(player) == winningTeam) {
+				if (arena.getTeam(player) == winningTeam) SongPlayer.playSong(player, Songs.WSGWIN);
+				else SongPlayer.playSong(player, Songs.WSGLOSE);
 
-					SongPlayer.playSong(player, Songs.WSGWIN);
-
-				} else {
-					SongPlayer.playSong(player, Songs.WSGLOSE);
-				}
 
 			}
 
@@ -122,17 +117,10 @@ public class Game {
 			winningTeam = Teams.BLUE;
 
 			for (UUID uuid : arena.getPlayers()) {
-
 				Player player = (Player) Bukkit.getPlayer(uuid);
 
-				if (arena.getTeam(player) == winningTeam) {
-
-					SongPlayer.playSong(player, Songs.WSGWIN);
-
-				} else {
-					SongPlayer.playSong(player, Songs.WSGLOSE);
-				}
-
+				if (arena.getTeam(player) == winningTeam) SongPlayer.playSong(player, Songs.WSGWIN);
+				else SongPlayer.playSong(player, Songs.WSGLOSE);
 			}
 			arena.setState(GameState.LIVE_ENDING);
 
@@ -143,17 +131,9 @@ public class Game {
 		else if (aliveRedPlayers == 0 && aliveBluePlayers == 0 && aliveGreenPlayers == 0 && aliveYellowPlayers >= 1) {
 			winningTeam = Teams.YELLOW;
 			for (UUID uuid : arena.getPlayers()) {
-
 				Player player = (Player) Bukkit.getPlayer(uuid);
-
-				if (arena.getTeam(player) == winningTeam) {
-
-					SongPlayer.playSong(player, Songs.WSGWIN);
-
-				} else {
-					SongPlayer.playSong(player, Songs.WSGLOSE);
-				}
-
+				if (arena.getTeam(player) == winningTeam) SongPlayer.playSong(player, Songs.WSGWIN);
+				else SongPlayer.playSong(player, Songs.WSGLOSE);
 			}
 			arena.setState(GameState.LIVE_ENDING);
 
@@ -164,17 +144,10 @@ public class Game {
 		} else if (aliveRedPlayers == 0 && aliveBluePlayers == 0 && aliveYellowPlayers == 0 && aliveGreenPlayers >= 1) {
 			winningTeam = Teams.GREEN;
 			for (UUID uuid : arena.getPlayers()) {
-
 				Player player = (Player) Bukkit.getPlayer(uuid);
 
-				if (arena.getTeam(player) == winningTeam) {
-
-					SongPlayer.playSong(player, Songs.WSGWIN);
-
-				} else {
-					SongPlayer.playSong(player, Songs.WSGLOSE);
-				}
-
+				if (arena.getTeam(player) == winningTeam) SongPlayer.playSong(player, Songs.WSGWIN);
+				else SongPlayer.playSong(player, Songs.WSGLOSE);
 			}
 			arena.setState(GameState.LIVE_ENDING);
 
@@ -208,33 +181,23 @@ public class Game {
 
 			else if (seconds == 0 && hasFallen && suddenDeath) {
 				arena.setState(GameState.LIVE_ENDING);
-
 				arena.sendMessage(ChatColor.YELLOW + "DRAW!");
 				startEnding(ChatColor.YELLOW + "DRAW!");
-
 			}
 		}
 
 	}
 
-	public static HashMap<Location, Material> getBlockLocations() {
-
-		return blockLocations;
-
-	}
+	public static HashMap<Location, Material> getBlockLocations() {return blockLocations;}
 
 	public HashMap<UUID, CustomDeathCause> getCustomDeathCause() {
 		return customDeathCause;
 	}
 
-	public CustomDeathCause getCustomDeathCause(Player player) {
-
-		return customDeathCause.get(player.getUniqueId());
-	}
+	public CustomDeathCause getCustomDeathCause(Player player) {return customDeathCause.get(player.getUniqueId());}
 
 	public boolean hasCustomDeathCause(Player player) {
 		if(customDeathCause.containsKey(player.getUniqueId()) && player.getLastDamageCause().equals(EntityDamageEvent.DamageCause.CUSTOM)) return true;
-
 		return false;
 	}
 
@@ -257,9 +220,8 @@ public class Game {
 		aliveYellowPlayers = 0;
 		aliveGreenPlayers = 0;
 
-		if (arena.getType() != GameType.MODIFIER) {
-			arena.setState(GameState.LIVE);
-		}
+		if (arena.getType() != GameType.MODIFIER) arena.setState(GameState.LIVE);
+
 
 		hasFallen = false;
 		suddenDeath = false;
@@ -333,7 +295,6 @@ public class Game {
 					// coal ore
 					world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ()))
 							.setType(Material.COAL_ORE);
-					;
 
 				} else {
 					blockLocations.put(new Location(Bukkit.getWorld(region.getWorld().getName()), vector.getX(),
@@ -341,7 +302,6 @@ public class Game {
 					// iron ore
 					world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ()))
 							.setType(Material.IRON_ORE);
-					;
 				}
 
 			} else if (region.getWorld().getBlock(vector).getType() == 103) {
@@ -353,14 +313,14 @@ public class Game {
 					// gold ore
 					world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ()))
 							.setType(Material.GOLD_ORE);
-					;
+
 				} else {
 					blockLocations.put(new Location(Bukkit.getWorld(region.getWorld().getName()), vector.getX(),
 							vector.getY(), vector.getZ()), Material.MELON_BLOCK);
 					// diamond ore
 					world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ()))
 							.setType(Material.DIAMOND_ORE);
-					;
+
 				}
 
 			} else if (region.getWorld().getBlock(vector).getType() == 47) {
@@ -638,13 +598,9 @@ public class Game {
 
 				Player player = Bukkit.getPlayer(uuid);
 
-
 				player.sendMessage(ChatColor.GREEN + "Pick a class before the game starts! You have 15 seconds!");
 				player.playSound(player.getLocation(), Sound.LEVEL_UP, 1f, 1f);
 				Menus.applyClassSelector(player);
-
-
-
 
 			}
 
@@ -669,8 +625,6 @@ public class Game {
 
 
 					if (timer > 1 && timer <= 5) {
-
-
 						arena.sendMessage(ChatColor.YELLOW + "The game starts in " + ChatColor.RED + timer + ChatColor.YELLOW + " seconds!");
 						arena.playSound(Sound.CLICK);
 
@@ -690,22 +644,14 @@ public class Game {
 	}
 
 	public void resetBlocks() {
-
 		for (Location loc : placedBlockLocations) {
-
 			loc.getBlock().setType(Material.AIR);
-
 		}
-
 		for (Location loc : blockLocations.keySet()) {
-
 			loc.getBlock().setType(blockLocations.get(loc));
-
 		}
-
 		blockLocations.clear();
 		placedBlockLocations.clear();
-
 	}
 	public ClassTypes randomClass() {
 		int i = 0;
@@ -721,25 +667,16 @@ public class Game {
 
 	}
 	public void startModGame() {
-
-
 		int i = 0;
-		for (Teams team : Teams.values()) {
-			if (arena.getTeamCount(team) == 0 && team != Teams.PLACEHOLDER) {
-				i++;
-			}
-		}
+		for (Teams team : Teams.values()) {if (arena.getTeamCount(team) == 0 && team != Teams.PLACEHOLDER) i++;}
 
 		if (i >= 5) {
 			arena.sendMessage(ChatColor.RED + "The other teams left, so this game was cancelled.");
-
 			for (UUID uuid: arena.getPlayers()) {
 				arena.setClass(uuid, randomClass());
 				Bukkit.getPlayer(uuid).closeInventory();
 			}
-
 			arena.reset();
-
 		}
        else{
 		for (UUID uuid : arena.getPlayers()) {
@@ -837,74 +774,39 @@ public class Game {
 			greenTeam.setDisplayName(ChatColor.GREEN + "GREEN");
 			greenTeam.setPrefix(ChatColor.GREEN + "GREEN ");
 
-			if (arena.getTeam(player).equals(Teams.RED)) {
+			if (arena.getTeam(player).equals(Teams.RED)) aliveRedPlayers = aliveRedPlayers + 1;
+			else if (arena.getTeam(player).equals(Teams.BLUE)) aliveBluePlayers = aliveBluePlayers + 1;
+			else if (arena.getTeam(player).equals(Teams.YELLOW)) aliveYellowPlayers = aliveYellowPlayers + 1;
+			else if (arena.getTeam(player).equals(Teams.GREEN)) aliveGreenPlayers = aliveGreenPlayers + 1;
 
-				aliveRedPlayers = aliveRedPlayers + 1;
-			} else if (arena.getTeam(player).equals(Teams.BLUE)) {
-
-				aliveBluePlayers = aliveBluePlayers + 1;
-			} else if (arena.getTeam(player).equals(Teams.YELLOW)) {
-
-				aliveYellowPlayers = aliveYellowPlayers + 1;
-			} else if (arena.getTeam(player).equals(Teams.GREEN)) {
-
-				aliveGreenPlayers = aliveGreenPlayers + 1;
-
-			}
 
 			for (UUID uuid1 : arena.getPlayers()) {
 
 				Player player1 = Bukkit.getPlayer(uuid1);
 
-				if (arena.getTeam(player1).equals(Teams.RED)) {
-					redTeam.addPlayer(player1);
-
-				} else if (arena.getTeam(player1).equals(Teams.BLUE)) {
-					blueTeam.addPlayer(player1);
-
-				} else if (arena.getTeam(player1).equals(Teams.YELLOW)) {
-					yellowTeam.addPlayer(player1);
-
-				} else if (arena.getTeam(player1).equals(Teams.GREEN)) {
-					greenTeam.addPlayer(player1);
-
-				}
+				if (arena.getTeam(player1).equals(Teams.RED)) redTeam.addPlayer(player1);
+				else if (arena.getTeam(player1).equals(Teams.BLUE)) blueTeam.addPlayer(player1);
+				else if (arena.getTeam(player1).equals(Teams.YELLOW)) yellowTeam.addPlayer(player1);
+				else if (arena.getTeam(player1).equals(Teams.GREEN)) greenTeam.addPlayer(player1);
 
 				nameCount++;
 			}
 
 			player.setScoreboard(board);
-
 			kills.put(player.getUniqueId(), 0);
-			if (arena.getTeam(player).equals(Teams.RED)) {
-				player.teleport(net.herobrine.wallsg.Config.getRedTeamSpawn(arena.getID()));
-			} else if (arena.getTeam(player).equals(Teams.BLUE)) {
-				player.teleport(net.herobrine.wallsg.Config.getBlueTeamSpawn(arena.getID()));
-			} else if (arena.getTeam(player).equals(Teams.YELLOW)) {
-				player.teleport(net.herobrine.wallsg.Config.getYellowTeamSpawn(arena.getID()));
-			} else if (arena.getTeam(player).equals(Teams.GREEN)) {
-				player.teleport(net.herobrine.wallsg.Config.getGreenTeamSpawn(arena.getID()));
-			} else {
-				player.sendMessage(ChatColor.RED
-						+ "Couldn't send you to your teams spawn point! Reason: You are not on a team. Please report this to staff, as you shouldn't be getting this error.");
 
-			}
-
+			if (arena.getTeam(player).equals(Teams.RED)) player.teleport(net.herobrine.wallsg.Config.getRedTeamSpawn(arena.getID()));
+			else if (arena.getTeam(player).equals(Teams.BLUE)) player.teleport(net.herobrine.wallsg.Config.getBlueTeamSpawn(arena.getID()));
+			else if (arena.getTeam(player).equals(Teams.YELLOW)) player.teleport(net.herobrine.wallsg.Config.getYellowTeamSpawn(arena.getID()));
+			else if (arena.getTeam(player).equals(Teams.GREEN)) player.teleport(net.herobrine.wallsg.Config.getGreenTeamSpawn(arena.getID()));
+			else player.sendMessage(ChatColor.RED + "Couldn't send you to your teams spawn point! Reason: You are not on a team. Please report this to staff, as you shouldn't be getting this error.");
 		}
 
-		for (UUID uuid : arena.getClasses().keySet()) {
-
-			arena.getClasses().get(uuid).onStart(Bukkit.getPlayer(uuid));
-
-		}
+		for (UUID uuid : arena.getClasses().keySet()) {arena.getClasses().get(uuid).onStart(Bukkit.getPlayer(uuid));}
 		for (UUID uuid : arena.getPlayers()) {
-
 			Player player = Bukkit.getPlayer(uuid);
-
 			player.getScoreboard().getTeam("playersLeft").setSuffix(ChatColor.GREEN + "" + getAlivePlayers().size());
-
 		}
-
 
 		arena.sendMessage(
 				ChatColor.translateAlternateColorCodes('&', "&a&m&l----------------------------------------"));
@@ -913,7 +815,6 @@ public class Game {
 				"&e&lMine within your space to upgrade your gear\n&e&lbefore the walls fall. The NPC outside your cave will have\n&e&lspecial items for you to purchase!\n&e&lLast team standing wins."));
 		arena.sendMessage(
 				ChatColor.translateAlternateColorCodes('&', "&a&m&l----------------------------------------"));
-
 
 		arena.setState(GameState.LIVE);
 		startWallTimer();
@@ -924,7 +825,6 @@ public class Game {
 	public void updateKillCounts(Player killer) {
 
 		kills.put(killer.getUniqueId(), kills.get(killer.getUniqueId()) + 1);
-
 		killer.getScoreboard().getTeam("kills").setSuffix(ChatColor.GREEN + "" + kills.get(killer.getUniqueId()));
 
 		HerobrinePVPCore.getFileManager().setGameStats(killer.getUniqueId(), Games.CLASH_ROYALE, "kills",
@@ -939,39 +839,26 @@ public class Game {
 	}
 
 	public static ItemStack getSpecialItem(Player player, Material material, int durability) {
-
 		for (ItemStack item : player.getInventory().getContents()) {
-
-			if (item != null && item.getType().equals(material) && item.getDurability() == durability) {
-				return item;
-			}
-
+			if (item != null && item.getType().equals(material) && item.getDurability() == durability) return item;
 		}
-		return null;
 
+		return null;
 	}
 
 	public static boolean containsAtLeast(Player player, Material material, int durability, int amount) {
-
 		int count = 0;
 		for (ItemStack item : player.getInventory().getContents()) {
-			if (item != null && item.getType() == material && item.getDurability() == durability)
-				count += item.getAmount();
+			if (item != null && item.getType() == material && item.getDurability() == durability) count += item.getAmount();
 		}
 
-		if (count >= amount) {
-			return true;
-		} else {
-			return false;
-		}
+		if (count >= amount) return true;
+		else return false;
+
 
 	}
 
-	public static void resetChests() {
-
-		ChestManager.getInstance().reset();
-
-	}
+	public static void resetChests() {ChestManager.getInstance().reset();}
 
 	public void setTime(int time, Player player) {
 		seconds = time;
@@ -1010,9 +897,7 @@ public class Game {
 					int newAmount = Math.max(0, preAmount - amount);
 					amount = Math.max(0, amount - preAmount);
 					invItem.setAmount(newAmount);
-					if (amount == 0) {
-						break;
-					}
+					if (amount == 0) break;
 				}
 			}
 		}
@@ -1063,22 +948,12 @@ public class Game {
 
 		if (keys.size() >= 1) {
 			Player player1 = Bukkit.getPlayer(keys.get(0));
-
 			if (player1 != null) {
 				if (Manager.isPlaying(player1)) {
-
-					if (Manager.getArena(player1).getID() == arena.getID()) {
-						arena.sendMessage(arena.getTeam(player1).getColor() + player1.getName() + ChatColor.GRAY + " - "
-								+ kills.get(player1.getUniqueId()));
-					} else {
-						arena.sendMessage(ChatColor.GRAY + player1.getName() + ChatColor.GRAY + " - "
-								+ kills.get(player1.getUniqueId()));
-					}
-				} else {
-					arena.sendMessage(ChatColor.GRAY + player1.getName() + ChatColor.GRAY + " - "
-							+ kills.get(player1.getUniqueId()));
+					if (Manager.getArena(player1).getID() == arena.getID()) arena.sendMessage(arena.getTeam(player1).getColor() + player1.getName() + ChatColor.GRAY + " - " + kills.get(player1.getUniqueId()));
+					else arena.sendMessage(ChatColor.GRAY + player1.getName() + ChatColor.GRAY + " - " + kills.get(player1.getUniqueId()));
 				}
-
+				else arena.sendMessage(ChatColor.GRAY + player1.getName() + ChatColor.GRAY + " - " + kills.get(player1.getUniqueId()));
 			}
 
 		} else {
@@ -1090,19 +965,10 @@ public class Game {
 			Player player2 = Bukkit.getPlayer(keys.get(1));
 			if (player2 != null) {
 				if (Manager.isPlaying(player2)) {
-
-					if (Manager.getArena(player2).getID() == arena.getID()) {
-						arena.sendMessage(arena.getTeam(player2).getColor() + player2.getName() + ChatColor.GRAY + " - "
-								+ kills.get(player2.getUniqueId()));
-					} else {
-						arena.sendMessage(ChatColor.GRAY + player2.getName() + ChatColor.GRAY + " - "
-								+ kills.get(player2.getUniqueId()));
-					}
-				} else {
-					arena.sendMessage(ChatColor.GRAY + player2.getName() + ChatColor.GRAY + " - "
-							+ kills.get(player2.getUniqueId()));
+					if (Manager.getArena(player2).getID() == arena.getID()) arena.sendMessage(arena.getTeam(player2).getColor() + player2.getName() + ChatColor.GRAY + " - " + kills.get(player2.getUniqueId()));
+					else arena.sendMessage(ChatColor.GRAY + player2.getName() + ChatColor.GRAY + " - " + kills.get(player2.getUniqueId()));
 				}
-
+				else arena.sendMessage(ChatColor.GRAY + player2.getName() + ChatColor.GRAY + " - " + kills.get(player2.getUniqueId()));
 			}
 		}
 
@@ -1111,31 +977,18 @@ public class Game {
 			if (player3 != null) {
 				if (Manager.isPlaying(player3)) {
 
-					if (Manager.getArena(player3).getID() == arena.getID()) {
-						arena.sendMessage(arena.getTeam(player3).getColor() + player3.getName() + ChatColor.GRAY + " - "
-								+ kills.get(player3.getUniqueId()));
-					} else {
-						arena.sendMessage(ChatColor.GRAY + player3.getName() + ChatColor.GRAY + " - "
-								+ kills.get(player3.getUniqueId()));
-					}
-				} else {
-					arena.sendMessage(ChatColor.GRAY + player3.getName() + ChatColor.GRAY + " - "
-							+ kills.get(player3.getUniqueId()));
-				}
+					if (Manager.getArena(player3).getID() == arena.getID()) arena.sendMessage(arena.getTeam(player3).getColor() + player3.getName() + ChatColor.GRAY + " - " + kills.get(player3.getUniqueId()));
+					else arena.sendMessage(ChatColor.GRAY + player3.getName() + ChatColor.GRAY + " - " + kills.get(player3.getUniqueId()));
+
+				} else arena.sendMessage(ChatColor.GRAY + player3.getName() + ChatColor.GRAY + " - " + kills.get(player3.getUniqueId()));
 			}
 		}
 
 		arena.sendMessage("");
 		arena.sendMessage(ChatColor.GREEN + "Rewards: ");
 
-		if (winningTeam.equalsIgnoreCase(ChatColor.YELLOW + "DRAW!")) {
-			arena.distributeRewards(Teams.PLACEHOLDER);
-		}
-		else {
-			arena.distributeRewards(this.winningTeam);
-		}
-
-
+		if (winningTeam.equalsIgnoreCase(ChatColor.YELLOW + "DRAW!")) arena.distributeRewards(Teams.PLACEHOLDER);
+		else arena.distributeRewards(this.winningTeam);
 
 
 		arena.sendMessage(
@@ -1145,9 +998,7 @@ public class Game {
 		endSeconds = 5;
 
 
-
 		new BukkitRunnable() {
-
 			@Override
 			public void run() {
 
@@ -1164,42 +1015,13 @@ public class Game {
 	}
 
 	public boolean isWearingEmeraldArmor(Player player) {
-
-		// wonky i know, but will cause NPEs otherwise.
-
-		if (player.getEquipment().getHelmet() != null && player.getEquipment().getHelmet().hasItemMeta()
-				&& player.getEquipment().getHelmet().getItemMeta().getDisplayName() != null) {
-
-			if (player.getEquipment().getChestplate() != null && player.getEquipment().getChestplate().hasItemMeta()
-					&& player.getEquipment().getChestplate().getItemMeta().getDisplayName() != null) {
-
-				if (player.getEquipment().getLeggings() != null && player.getEquipment().getLeggings().hasItemMeta()
-						&& player.getEquipment().getLeggings().getItemMeta().getDisplayName() != null) {
-
-					if (player.getEquipment().getBoots() != null && player.getEquipment().getBoots().hasItemMeta()
-							&& player.getEquipment().getBoots().getItemMeta().getDisplayName() != null) {
-
-						if (player.getEquipment().getHelmet().getItemMeta().getDisplayName()
-								.equals(ChatColor.GREEN + "Emerald Helmet")
-								&& player.getEquipment().getChestplate().getItemMeta().getDisplayName()
-										.equals(ChatColor.GREEN + "Emerald Chestplate")
-								&& player.getEquipment().getLeggings().getItemMeta().getDisplayName()
-										.equals(ChatColor.GREEN + "Emerald Leggings")
-								&& player.getEquipment().getBoots().getItemMeta().getDisplayName()
-										.contentEquals(ChatColor.GREEN + "Emerald Boots")) {
-
-							return true;
-						}
-					}
-
-				}
-
-			}
-
+		for (ItemStack stack : player.getEquipment().getArmorContents()) {
+			if (stack == null) return false;
+			if (!stack.hasItemMeta()) return false;
+			if (stack.getItemMeta().getDisplayName() == null) return false;
+			if (!stack.getItemMeta().getDisplayName().contains("Emerald")) return false;
 		}
-
-		return false;
-
+		return true;
 	}
 	public boolean isFrozen() {
 		return isFrozen;
@@ -1225,10 +1047,7 @@ public class Game {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				if (arena.getState().equals(GameState.RECRUITING) || arena.getState().equals(GameState.COUNTDOWN)
-						|| arena.getState().equals(GameState.LIVE_ENDING)) {
-					cancel();
-				}
+				if (arena.getState().equals(GameState.RECRUITING) || arena.getState().equals(GameState.COUNTDOWN) || arena.getState().equals(GameState.LIVE_ENDING)) cancel();
 
 				if (seconds < 0) {
 					cancel();
@@ -1239,11 +1058,9 @@ public class Game {
 					Player player = Bukkit.getPlayer(uuid);
 					String time = String.format("%02d:%02d", seconds / 60, seconds % 60);
 
-
 					if (player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).getDisplayName().contains("Walls SG")) {
 						player.getScoreboard().getTeam("wsgtimer").setSuffix(ChatColor.GREEN + time);
-						player.getScoreboard().getTeam("playersLeft")
-								.setSuffix(ChatColor.GREEN + "" + getAlivePlayers().size());
+						player.getScoreboard().getTeam("playersLeft").setSuffix(ChatColor.GREEN + "" + getAlivePlayers().size());
 					}
 
 					if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType()
@@ -1253,36 +1070,25 @@ public class Game {
 					}
 
 					if (Game.getAlivePlayers().size() == 0) {
-
 						startEnding(ChatColor.YELLOW + "DRAW!");
 						cancel();
-
 					}
 
 					if (player.getGameMode().equals(GameMode.SURVIVAL)) {
 						if (isWearingEmeraldArmor(player)) {
-
 							PotionEffect playerEffectForArmor = PotionEffectType.SPEED.createEffect(9999999, 1);
 							player.addPotionEffect(playerEffectForArmor);
-						} else {
-							player.removePotionEffect(PotionEffectType.SPEED);
 						}
+						else player.removePotionEffect(PotionEffectType.SPEED);
 
 					}
 
 				}
 
-				if (seconds == 0 && hasFallen && !suddenDeath) {
-
-					isGameOver();
-
-				}
-
+				if (seconds == 0 && hasFallen && !suddenDeath) isGameOver();
 				if (seconds == 0 && hasFallen && suddenDeath) {
 					startEnding(ChatColor.YELLOW + "DRAW!");
-
 					cancel();
-
 				}
 
 				if (seconds == 175 && hasFallen && !suddenDeath) {
@@ -1325,7 +1131,6 @@ public class Game {
 
 					for (UUID uuid : arena.getPlayers()) {
 						Player player = Bukkit.getPlayer(uuid);
-
 						player.getScoreboard().getTeam("wsgtimer").setPrefix(ChatColor.GREEN + "Sudden Death ");
 					}
 
@@ -1343,7 +1148,6 @@ public class Game {
 					arena.playSound(Sound.CLICK);
 					arena.sendMessage(ChatColor.YELLOW + "Sudden Death will begin in " + ChatColor.GREEN + "3"
 							+ ChatColor.YELLOW + " minutes!");
-
 				}
 
 				else if (seconds == 180 && hasFallen && suddenDeath && !isFrozen) {

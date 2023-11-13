@@ -113,7 +113,7 @@ public enum ShopItems {
             false, false, false,  false, null, 0, Shops.IRON_INGOT, false, null),
     BOW(ChatColor.GRAY + "Simple Bow", 1, 1, Material.BOW, null, new String[] {}, new Enchantment[] {},
             0,0,0, null, 0,0,false, false, false,
-            false ,false, false, true, Material.STRING, 2, Shops.IRON_INGOT, false, null),
+            false ,false, false, false, Material.STRING, 2, Shops.IRON_INGOT, false, null),
     PACK_OF_ARROWS(ChatColor.GRAY + "Arrows", 2, 16, Material.ARROW, null, new String[] {}, new Enchantment[] {},
             0,0,0,null,0,0, false, false, false, false,
             false, false, false, null, 0, Shops.IRON_INGOT, false, null),

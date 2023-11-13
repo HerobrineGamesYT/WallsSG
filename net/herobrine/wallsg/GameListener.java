@@ -74,18 +74,13 @@ public class GameListener implements Listener {
 
 			ClassTypes type;
 
-			if (e.getCurrentItem().getType().equals(Material.EMERALD)) {
-				type = ClassTypes.ECONOMIST;
-			}
+			if (e.getCurrentItem().getType().equals(Material.EMERALD)) type = ClassTypes.ECONOMIST;
+			else type = ClassTypes.valueOf(classString);
+
+
+
+			if (Manager.hasKit(player) && Manager.getKit(player).equals(type)) player.sendMessage(ChatColor.RED + "You already have this class selected!");
 			else {
-				type = ClassTypes.valueOf(classString);
-			}
-
-
-			if (Manager.hasKit(player) && Manager.getKit(player).equals(type)) {
-				player.sendMessage(ChatColor.RED + "You already have this class selected!");
-			} else {
-
 				if (type.isUnlockable() && !HerobrinePVPCore.getFileManager().isItemUnlocked(ItemTypes.CLASS,
 						type.toString(), player.getUniqueId())) {
 
@@ -106,16 +101,10 @@ public class GameListener implements Listener {
 		} else {
 			if (Manager.isPlaying(player)) {
 				Arena arena = Manager.getArena(player);
-
-				if (arena.getGame(arena.getID()).equals(Games.WALLS_SG)) {
-					e.setCancelled(false);
-
-				}
+				if (arena.getGame(arena.getID()).equals(Games.WALLS_SG)) e.setCancelled(false);
 			}
 		}
 	}
-
-
 
 
 	@EventHandler
@@ -131,15 +120,12 @@ public class GameListener implements Listener {
 
 						e.setCancelled(false);
 						Game.getPlacedBlockLocations().remove(e.getBlock().getLocation());
-
 					}
-
 					else {
 						Game.getBlockLocations().put(e.getBlock().getLocation(), e.getBlock().getType());
 						ItemStack blockDrop = new ItemStack(e.getBlock().getType(), 1);
 						player.getInventory().addItem(blockDrop);
 						e.getBlock().setType(Material.BEDROCK);
-
 
 					}
 
@@ -211,125 +197,67 @@ public class GameListener implements Listener {
 				player.playSound(player.getLocation(), Sound.VILLAGER_NO, 1f, 1f);
 				player.sendMessage(ChatColor.RED + "You cannot place crafting tables! Buy items from the shop NPC!");
 			}
-
 			else if (e.getBlock().getType().equals(Material.STRING)
 					|| e.getBlock().getType().equals(Material.TRIPWIRE)) {
 				e.setCancelled(true);
 			}
-
-			else {
-				Game.getPlacedBlockLocations().add(e.getBlock().getLocation());
-			}
+			else Game.getPlacedBlockLocations().add(e.getBlock().getLocation());
 
 		} else {
-			if (!BuildCommand.buildEnabledPlayers.contains(player)) {
-				e.setCancelled(true);
-			}
+			if (!BuildCommand.buildEnabledPlayers.contains(player)) e.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	public void onWaterPlace(PlayerBucketEmptyEvent e) {
-
 		Block block = e.getBlockClicked().getRelative(e.getBlockFace());
-
 		Game.getPlacedBlockLocations().add(block.getLocation());
-
 	}
 
 	@EventHandler
 	public void onBucketFill(PlayerBucketFillEvent e) {
 		Block block = e.getBlockClicked().getRelative(e.getBlockFace());
-
-		if (Game.getPlacedBlockLocations().contains(block.getLocation())) {
-			Game.getPlacedBlockLocations().remove(block.getLocation());
-		}
-
+		if (Game.getPlacedBlockLocations().contains(block.getLocation())) Game.getPlacedBlockLocations().remove(block.getLocation());
 	}
 
 	@EventHandler
 	public void flowingWater(BlockFromToEvent e) {
-
-		if (e.getToBlock().getType().equals(Material.CARPET)) {
-			e.setCancelled(true);
-		}
-
+		if (e.getToBlock().getType().equals(Material.CARPET)) e.setCancelled(true);
 	}
 
 	@EventHandler
 	public void onConsume(PlayerItemConsumeEvent e) {
-
-		if (e.getItem().getType().equals(Material.POTION)) {
-			Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(WallsMain.getInstance(), new Runnable() {
-				public void run() {
-					e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
-				}
-			}, 1L);
-		}
-
+		if (e.getItem().getType().equals(Material.POTION)) Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(WallsMain.getInstance(), () -> e.getPlayer().setItemInHand(new ItemStack(Material.AIR)), 1L);
 	}
 
 	@EventHandler
 	public void onDrop(PlayerDropItemEvent e) {
 		Player player = e.getPlayer();
-		if (Manager.isPlaying(player)) {
-			if (Manager.getArena(player).getState().equals(GameState.LIVE)) {
-				return;
-			}
-		} else {
-			if (!BuildCommand.buildEnabledPlayers.contains(player)) {
-				e.setCancelled(true);
-			}
-		}
+		if (Manager.isPlaying(player)) if (Manager.getArena(player).getState().equals(GameState.LIVE)) return;
+		else if (!BuildCommand.buildEnabledPlayers.contains(player)) e.setCancelled(true);
 
 	}
 
 	@EventHandler
 	public void onDamage(EntityDamageEvent e) {
-		if (e.getEntity() instanceof Villager) {
-			e.setCancelled(true);
-		}
-
+		if (e.getEntity() instanceof Villager) e.setCancelled(true);
 		if (e.getEntity() instanceof Player) {
 			Player player = (Player) e.getEntity();
 			if (Manager.isPlaying(player)) {
 				if (!Manager.getArena(player).getState().equals(GameState.LIVE)) {
-					if (e.getCause().equals(DamageCause.FALL)) {
-						e.setCancelled(true);
-					}
-					if (e.getCause().equals(DamageCause.DROWNING)) {
-						e.setCancelled(true);
-					}
-					if (e.getCause().equals(DamageCause.ENTITY_ATTACK)) {
-						e.setCancelled(true);
-					}
-					if (e.getCause().equals(DamageCause.FIRE)) {
-						e.setCancelled(true);
-					}
-					if (e.getCause().equals(DamageCause.LAVA)) {
-						e.setCancelled(true);
-					}
+					if (e.getCause().equals(DamageCause.FALL)) e.setCancelled(true);
+					if (e.getCause().equals(DamageCause.DROWNING)) e.setCancelled(true);
+					if (e.getCause().equals(DamageCause.ENTITY_ATTACK)) e.setCancelled(true);
+					if (e.getCause().equals(DamageCause.FIRE)) e.setCancelled(true);
+					if (e.getCause().equals(DamageCause.LAVA)) e.setCancelled(true);
 				}
-
-				else if (Manager.getArena(player).getSpectators().contains(player.getUniqueId())) {
-					e.setCancelled(true);
-				}
+				else if (Manager.getArena(player).getSpectators().contains(player.getUniqueId())) e.setCancelled(true);
 			} else {
-				if (e.getCause().equals(DamageCause.FALL)) {
-					e.setCancelled(true);
-				}
-				if (e.getCause().equals(DamageCause.DROWNING)) {
-					e.setCancelled(true);
-				}
-				if (e.getCause().equals(DamageCause.ENTITY_ATTACK)) {
-					e.setCancelled(true);
-				}
-				if (e.getCause().equals(DamageCause.FIRE)) {
-					e.setCancelled(true);
-				}
-				if (e.getCause().equals(DamageCause.LAVA)) {
-					e.setCancelled(true);
-				}
+				if (e.getCause().equals(DamageCause.FALL)) e.setCancelled(true);
+				if (e.getCause().equals(DamageCause.DROWNING)) e.setCancelled(true);
+				if (e.getCause().equals(DamageCause.ENTITY_ATTACK)) e.setCancelled(true);
+				if (e.getCause().equals(DamageCause.FIRE)) e.setCancelled(true);
+				if (e.getCause().equals(DamageCause.LAVA)) e.setCancelled(true);
 			}
 
 		}
@@ -341,15 +269,9 @@ public class GameListener implements Listener {
 		Player player = (Player) e.getWhoClicked();
 
 		if (Manager.isPlaying(player)) {
-
-			if (!Manager.getArena(player).getState().equals(GameState.LIVE)) {
-				e.setCancelled(true);
-			}
-
+			if (!Manager.getArena(player).getState().equals(GameState.LIVE)) e.setCancelled(true);
 		} else {
-			if (BuildCommand.buildEnabledPlayers.contains(player)) {
-				e.setCancelled(true);
-			}
+			if (!BuildCommand.buildEnabledPlayers.contains(player)) e.setCancelled(true);
 		}
 
 	}
@@ -361,38 +283,19 @@ public class GameListener implements Listener {
 			if (Manager.getArena(player).getState().equals(GameState.LIVE)) {
 				Arena arena = Manager.getArena(player);
 				arena.sendMessage(HerobrinePVPCore.getFileManager().getRank(player).getColor() + player.getName()
-						+ ChatColor.YELLOW + "has left!");
+						+ ChatColor.YELLOW + " has left!");
 
 				Game game = arena.getwallsSGGame();
-
-
 				if (Game.getAlivePlayers().contains(player.getUniqueId())) {
-
 					Game.getAlivePlayers().remove(player.getUniqueId());
 					if (Game.alivePlayers1.containsKey(player.getUniqueId())) {
 
 						Game.alivePlayers1.remove(player.getUniqueId());
 
-						if (arena.getTeam(player).equals(Teams.RED)) {
-
-							game.aliveRedPlayers = game.aliveRedPlayers - 1;
-						}
-
-						else if (arena.getTeam(player).equals(Teams.BLUE)) {
-
-							game.aliveBluePlayers = game.aliveBluePlayers - 1;
-						}
-
-						else if (arena.getTeam(player).equals(Teams.YELLOW)) {
-
-							game.aliveYellowPlayers = game.aliveYellowPlayers - 1;
-						}
-
-						else if (arena.getTeam(player).equals(Teams.GREEN)) {
-
-							game.aliveGreenPlayers = game.aliveGreenPlayers - 1;
-
-						}
+						if (arena.getTeam(player).equals(Teams.RED)) game.aliveRedPlayers = game.aliveRedPlayers - 1;
+						else if (arena.getTeam(player).equals(Teams.BLUE)) game.aliveBluePlayers = game.aliveBluePlayers - 1;
+						else if (arena.getTeam(player).equals(Teams.YELLOW)) game.aliveYellowPlayers = game.aliveYellowPlayers - 1;
+						else if (arena.getTeam(player).equals(Teams.GREEN)) game.aliveGreenPlayers = game.aliveGreenPlayers - 1;
 					}
 				}
 
@@ -419,93 +322,50 @@ public class GameListener implements Listener {
 	public void onNPCClick(NPCRightClickEvent e) {
 		Player player = e.getClicker();
 
-		if (e.getNPC().getName().contains("WALLS SG")) {
-
-			GameCoreMain.getInstance().startQueue(e.getClicker(), Games.WALLS_SG, GameType.VANILLA);
-		} else if (e.getNPC().getName().contains("SHOP")) {
-
+		if (e.getNPC().getName().contains("WALLS SG")) GameCoreMain.getInstance().startQueue(e.getClicker(), Games.WALLS_SG, GameType.VANILLA);
+		 else if (e.getNPC().getName().contains("SHOP")) {
 			if (Manager.isPlaying(e.getClicker())) {
 
 				Arena arena = Manager.getArena(player);
 
 				if (arena.getGame(arena.getID()).equals(Games.WALLS_SG)) {
-
 					if (arena.getState().equals(GameState.LIVE)) {
-
-						if (Game.getAlivePlayers().contains(player.getUniqueId())) {
-
-							Menus.applyShopHome(player);
-						} else {
-							player.sendMessage(ChatColor.RED + "You must be alive to use the shop!");
-						}
-
-					} else {
-						player.sendMessage(ChatColor.RED + "The game is not live!");
+						if (Game.getAlivePlayers().contains(player.getUniqueId())) Menus.applyShopHome(player);
+						else player.sendMessage(ChatColor.RED + "You must be alive to use the shop!");
 					}
-
+					else player.sendMessage(ChatColor.RED + "The game is not live!");
 				}
-
-			} else {
-
-				player.sendMessage(ChatColor.RED + "You are not in a game!");
 			}
-
+			else player.sendMessage(ChatColor.RED + "You are not in a game!");
 		}
 
-		else if (e.getNPC().getName().contains("BATTLE CLASH")) {
-			net.herobrine.core.Menus.applyGamemodeMenu(player);
-		} else if (e.getNPC().getName().contains("COMING SOON")) {
-
-			player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cThis game is coming soon!"));
-		}
-
+		else if (e.getNPC().getName().contains("BATTLE CLASH")) net.herobrine.core.Menus.applyGamemodeMenu(player);
+		else if (e.getNPC().getName().contains("COMING SOON")) player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cThis game is coming soon!"));
 	}
-
 	@EventHandler
 	public void onNPCLeftClick(NPCLeftClickEvent e) {
 		Player player = e.getClicker();
 
-		if (e.getNPC().getName().contains("WALLS SG")) {
-
-			GameCoreMain.getInstance().startQueue(e.getClicker(), Games.WALLS_SG, GameType.VANILLA);
-		} else if (e.getNPC().getName().contains("SHOP")) {
-
+		if (e.getNPC().getName().contains("WALLS SG")) GameCoreMain.getInstance().startQueue(e.getClicker(), Games.WALLS_SG, GameType.VANILLA);
+		else if (e.getNPC().getName().contains("SHOP")) {
 			if (Manager.isPlaying(e.getClicker())) {
 
 				Arena arena = Manager.getArena(player);
 
 				if (arena.getGame(arena.getID()).equals(Games.WALLS_SG)) {
-
 					if (arena.getState().equals(GameState.LIVE)) {
-
-						if (Game.getAlivePlayers().contains(player.getUniqueId())) {
-
-							Menus.applyShopHome(player);
-						} else {
-							player.sendMessage(ChatColor.RED + "You must be alive to use the shop!");
-						}
-
-					} else {
-						player.sendMessage(ChatColor.RED + "The game is not live!");
+						if (Game.getAlivePlayers().contains(player.getUniqueId())) Menus.applyShopHome(player);
+						else player.sendMessage(ChatColor.RED + "You must be alive to use the shop!");
 					}
-
+					else player.sendMessage(ChatColor.RED + "The game is not live!");
 				}
-
-			} else {
-
-				player.sendMessage(ChatColor.RED + "You are not in a game!");
 			}
-
+			else player.sendMessage(ChatColor.RED + "You are not in a game!");
 		}
 
-		else if (e.getNPC().getName().contains("BATTLE CLASH")) {
-			net.herobrine.core.Menus.applyGamemodeMenu(player);
-		}
+		else if (e.getNPC().getName().contains("BATTLE CLASH")) net.herobrine.core.Menus.applyGamemodeMenu(player);
+		else if (e.getNPC().getName().contains("COMING SOON")) player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cThis game is coming soon!"));
 
-		else if (e.getNPC().getName().contains("COMING SOON")) {
-
-			player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cThis game is coming soon!"));
-		}
 	}
 
 	@EventHandler
@@ -527,25 +387,10 @@ public class GameListener implements Listener {
 
 				}
 
-				if (arena.getTeam(player).equals(Teams.RED)) {
-
-					e.setRespawnLocation(Config.getRedTeamSpawn(arena.getID()));
-
-				}
-
-				else if (arena.getTeam(player).equals(Teams.BLUE)) {
-					e.setRespawnLocation(Config.getBlueTeamSpawn(arena.getID()));
-
-				}
-
-				else if (arena.getTeam(player).equals(Teams.YELLOW)) {
-					e.setRespawnLocation(Config.getYellowTeamSpawn(arena.getID()));
-				}
-
-				else {
-					e.setRespawnLocation(Config.getGreenTeamSpawn(arena.getID()));
-				}
-
+				if (arena.getTeam(player).equals(Teams.RED)) e.setRespawnLocation(Config.getRedTeamSpawn(arena.getID()));
+				else if (arena.getTeam(player).equals(Teams.BLUE)) e.setRespawnLocation(Config.getBlueTeamSpawn(arena.getID()));
+				else if (arena.getTeam(player).equals(Teams.YELLOW)) e.setRespawnLocation(Config.getYellowTeamSpawn(arena.getID()));
+				else e.setRespawnLocation(Config.getGreenTeamSpawn(arena.getID()));
 			}
 		}
 
@@ -553,21 +398,19 @@ public class GameListener implements Listener {
 
 	@EventHandler
 	public void onDeath(PlayerDeathEvent e) {
-		if (e.getEntity() instanceof Player) {
+		if (e.getEntity() != null) {
 
-			Player player = (Player) e.getEntity();
+			Player player = e.getEntity();
 			DamageCause deathCause = player.getLastDamageCause().getCause();
 			if (Manager.isPlaying(player)) {
 				Arena arena = Manager.getArena(player);
-				// DO NOT REMOVE THIS IF STATEMENT! It's essential even though it's blank.
+				// DO NOT REMOVE THIS IF STATEMENT! It's essential even though it's blank. IDK why.
 				if (!arena.getGame(arena.getID()).equals(Games.WALLS_SG)) {}
 
 				else if (Game.getAlivePlayers().contains(player.getUniqueId())) {
 					Game game = arena.getwallsSGGame();
 					if (player.getKiller() != null) {
 						Player killer = player.getKiller();
-
-
 
 						if (deathCause.equals(DamageCause.ENTITY_ATTACK)) {
 							arena.sendMessage(arena.getTeam(killer).getColor() + killer.getName() + ChatColor.GRAY
@@ -604,26 +447,11 @@ public class GameListener implements Listener {
 							Game.getAlivePlayers().remove(player.getUniqueId());
 							arena.setSpectator(player);
 						}
-						if (arena.getTeam(player).equals(Teams.RED)) {
 
-							game.aliveRedPlayers = game.aliveRedPlayers - 1;
-						}
-
-						else if (arena.getTeam(player).equals(Teams.BLUE)) {
-
-							game.aliveBluePlayers = game.aliveBluePlayers - 1;
-						}
-
-						else if (arena.getTeam(player).equals(Teams.YELLOW)) {
-
-							game.aliveYellowPlayers = game.aliveYellowPlayers - 1;
-						}
-
-						else if (arena.getTeam(player).equals(Teams.GREEN)) {
-
-							game.aliveGreenPlayers = game.aliveGreenPlayers - 1;
-
-						}
+						if (arena.getTeam(player).equals(Teams.RED)) game.aliveRedPlayers = game.aliveRedPlayers - 1;
+						else if (arena.getTeam(player).equals(Teams.BLUE)) game.aliveBluePlayers = game.aliveBluePlayers - 1;
+						else if (arena.getTeam(player).equals(Teams.YELLOW)) game.aliveYellowPlayers = game.aliveYellowPlayers - 1;
+						else if (arena.getTeam(player).equals(Teams.GREEN)) game.aliveGreenPlayers = game.aliveGreenPlayers - 1;
 
 						arena.getwallsSGGame().updateKillCounts(killer);
 					} else {
@@ -632,27 +460,10 @@ public class GameListener implements Listener {
 						if(!game.hasCustomDeathCause(player) && !player.getLastDamageCause().getCause().equals(DamageCause.CUSTOM)) arena.sendMessage(arena.getTeam(player).getColor() + player.getName() + ChatColor.GRAY + " has died.");
 						Game.getAlivePlayers().remove(player.getUniqueId());
 						arena.setSpectator(player);
-						if (arena.getTeam(player).equals(Teams.RED)) {
-
-							game.aliveRedPlayers = game.aliveRedPlayers - 1;
-						}
-
-						else if (arena.getTeam(player).equals(Teams.BLUE)) {
-
-							game.aliveBluePlayers = game.aliveBluePlayers - 1;
-						}
-
-						else if (arena.getTeam(player).equals(Teams.YELLOW)) {
-
-							game.aliveYellowPlayers = game.aliveYellowPlayers - 1;
-						}
-
-						else if (arena.getTeam(player).equals(Teams.GREEN)) {
-
-							game.aliveGreenPlayers = game.aliveGreenPlayers - 1;
-
-						}
-
+						if (arena.getTeam(player).equals(Teams.RED)) game.aliveRedPlayers = game.aliveRedPlayers - 1;
+						else if (arena.getTeam(player).equals(Teams.BLUE)) game.aliveBluePlayers = game.aliveBluePlayers - 1;
+						else if (arena.getTeam(player).equals(Teams.YELLOW)) game.aliveYellowPlayers = game.aliveYellowPlayers - 1;
+						else if (arena.getTeam(player).equals(Teams.GREEN)) game.aliveGreenPlayers = game.aliveGreenPlayers - 1;
 					}
 					Game.alivePlayers1.remove(player.getUniqueId());
 
@@ -685,15 +496,12 @@ public class GameListener implements Listener {
 
 	@EventHandler
 	public void onNPCDamage(NPCDamageEvent e) {
-
-		e.setCancelled(true);
-
+		if (e.getNPC().isProtected()) e.setCancelled(true);
 	}
 
 	@EventHandler
 	public void onDamageByEntityNPC(NPCDamageByEntityEvent e) {
-
-		e.setCancelled(true);
+		if (e.getNPC().isProtected()) e.setCancelled(true);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -766,21 +574,14 @@ public class GameListener implements Listener {
 					Player victim = (Player) e.getEntity();
 					if (Manager.isPlaying(victim)) {
 
-						if (arena.getSpectators().contains(player.getUniqueId())) {
-							e.setCancelled(true);
-						}
-
+						if (arena.getSpectators().contains(player.getUniqueId())) e.setCancelled(true);
 						if (arena.getTeam(player).equals(arena.getTeam(victim))
 								&& arena.getGame(arena.getID()).isTeamGame() && arena.getState() == GameState.LIVE) {
 							e.setCancelled(true);
 							player.sendMessage(ChatColor.RED + "You cannot hurt your teammates!");
-						} else if (arena.getSpectators().contains(player.getUniqueId())) {
-							e.setCancelled(true);
 						}
-					} else {
-						e.setCancelled(true);
 					}
-
+					else e.setCancelled(true);
 				}
 			}
 
@@ -793,22 +594,15 @@ public class GameListener implements Listener {
 			if (e.getEntity() instanceof Player) {
 				Player victim = (Player) e.getEntity();
 				if (Manager.isPlaying(victim)) {
-
 					Arena arena = Manager.getArena(victim);
-
 					if (arrow.getShooter() instanceof Player) {
 						Player shooter = (Player) arrow.getShooter();
-						if (arena.getTeam(shooter) == arena.getTeam(victim) || arena.getState() != GameState.LIVE
-								|| arena.getSpectators().contains(shooter.getUniqueId())) {
-							e.setCancelled(true);
-						} else {
-							e.setCancelled(false);
-						}
+						if (arena.getTeam(shooter) == arena.getTeam(victim) || arena.getState() != GameState.LIVE || arena.getSpectators().contains(shooter.getUniqueId())) e.setCancelled(true);
+						else e.setCancelled(false);
 					}
-
-				} else {
-					e.setCancelled(true);
 				}
+				else e.setCancelled(true);
+
 			}
 
 		}
@@ -820,22 +614,15 @@ public class GameListener implements Listener {
 			if (e.getEntity() instanceof Player) {
 				Player victim = (Player) e.getEntity();
 				if (Manager.isPlaying(victim)) {
-
 					Arena arena = Manager.getArena(victim);
-
 					if (arrow.getShooter() instanceof Player) {
 						Player shooter = (Player) arrow.getShooter();
-						if (arena.getTeam(shooter) == arena.getTeam(victim) || arena.getState() != GameState.LIVE
-								|| arena.getSpectators().contains(shooter.getUniqueId())) {
-							e.setCancelled(true);
-						} else {
-							e.setCancelled(false);
-						}
+						if (arena.getTeam(shooter) == arena.getTeam(victim) || arena.getState() != GameState.LIVE || arena.getSpectators().contains(shooter.getUniqueId())) e.setCancelled(true);
+						else e.setCancelled(false);
 					}
-
-				} else {
-					e.setCancelled(true);
 				}
+				else e.setCancelled(true);
+
 			}
 
 		}
@@ -870,6 +657,14 @@ public class GameListener implements Listener {
 			}
 			anvilMap.put(player.getUniqueId(), b);
 		}
+
+		if (e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.CHEST) {
+			if (Manager.isPlaying(player)) {
+				Arena arena = Manager.getArena(player);
+				if (arena.getSpectators().contains(player.getUniqueId())) e.setCancelled(true);
+			}
+		}
+
 		if (player.getItemInHand() != null && player.getItemInHand().getType() != Material.AIR) {
 			if (player.getItemInHand().getItemMeta() != null
 					&& player.getItemInHand().getItemMeta().getDisplayName() != null) {
@@ -895,18 +690,13 @@ public class GameListener implements Listener {
 							Manager.getArena(player).removePlayer(player);
 
 						}
-					} else {
-						player.sendMessage(ChatColor.RED + "You are not in a game!");
-
 					}
-
-				} else {
-					return;
+					else player.sendMessage(ChatColor.RED + "You are not in a game!");
 				}
+				else return;
+
 			}
-
 		}
-
 	}
 
 	@EventHandler
@@ -916,14 +706,8 @@ public class GameListener implements Listener {
 		e.setCancelled(true);
 		if (entity.getType().equals(EntityType.VILLAGER) && entity.getCustomName()
 				.equalsIgnoreCase(ChatColor.translateAlternateColorCodes('&', "&e&lITEM SHOP"))) {
-			if (Game.getAlivePlayers().contains(player.getUniqueId())) {
-
-				Menus.applyShopHome(player);
-			} else {
-
-				player.sendMessage(ChatColor.RED + "You can only use the shop if you are alive in-game!");
-			}
-
+			if (Game.getAlivePlayers().contains(player.getUniqueId())) Menus.applyShopHome(player);
+			 else player.sendMessage(ChatColor.RED + "You can only use the shop if you are alive in-game!");
 		} else if (entity.getType().equals(EntityType.VILLAGER) && entity.getCustomName()
 				.equalsIgnoreCase(ChatColor.translateAlternateColorCodes('&', "&e&lWALLS SG"))) {
 			e.setCancelled(true);
@@ -1049,19 +833,13 @@ public class GameListener implements Listener {
 						b.setData((byte) 2);
 					if (b.getData() == 11)
 						b.setData((byte) 3);
-
 				}
-
 				if (e.getCurrentItem() != null) {
 
 					String itemName;
-					if (e.getClickedInventory().getItem(0).getItemMeta().getDisplayName() == null) {
+					if (e.getClickedInventory().getItem(0).getItemMeta().getDisplayName() == null) itemName = Game.getFriendlyName(e.getClickedInventory().getItem(0).getType());
+					else itemName = e.getClickedInventory().getItem(0).getItemMeta().getDisplayName();
 
-						itemName = Game.getFriendlyName(e.getClickedInventory().getItem(0).getType());
-
-					} else {
-						itemName = e.getClickedInventory().getItem(0).getItemMeta().getDisplayName();
-					}
 
 					if (e.getCurrentItem().getItemMeta() != null
 							&& e.getCurrentItem().getItemMeta().getDisplayName() != null) {

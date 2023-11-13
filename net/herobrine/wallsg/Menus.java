@@ -168,7 +168,6 @@ public class Menus {
 
 	}
 
-
 	public static void applyShop(Player player, Shops shop) {
 		if (shop.requiresCurrency() && !player.getInventory().contains(shop.getCurrency().getType())) {
 			player.sendMessage(ChatColor.RED + "You need at least 1 " + shop.getCurrencyDisplayName() + ChatColor.RED + " to use this shop!");
