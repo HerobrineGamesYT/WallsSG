@@ -1,5 +1,8 @@
 package net.herobrine.wallsg.game;
 
+import net.herobrine.gamecore.Arena;
+import net.herobrine.gamecore.GameType;
+import net.herobrine.gamecore.Manager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -15,7 +18,8 @@ public enum Shops {
     GOLD(ChatColor.GOLD + "Healing", ChatColor.GOLD + "Gold", new ItemStack(Material.GOLD_INGOT), new ItemStack(Material.GOLD_INGOT), new ShopItems[]{ShopItems.GOLDEN_APPLE, ShopItems.HEALING_1, ShopItems.HEALING_2},false, false),
     IRON_INGOT(ChatColor.GRAY + "Armor and Weapons", ChatColor.GRAY + "Iron", new ItemStack(Material.IRON_INGOT), new ItemStack(Material.IRON_INGOT), new ShopItems[] {ShopItems.IRON_SWORD, ShopItems.IRON_HELMET, ShopItems.IRON_CHESTPLATE, ShopItems.IRON_LEGGINGS, ShopItems.IRON_BOOTS, ShopItems.BOW, ShopItems.PACK_OF_ARROWS}, false, false),
     COAL(ChatColor.DARK_GRAY + "Utility Shop",  ChatColor.DARK_GRAY + "Coal", new ItemStack(Material.COAL), new ItemStack(Material.COAL), new ShopItems[] {ShopItems.WATER_BUCKET, ShopItems.FISHING_ROD, ShopItems.ENDER_PEARL}, false, false),
-    BLOCK_TRADING(ChatColor.YELLOW + "Block Trading", ChatColor.YELLOW + "Block Trading", new ItemStack(Material.WOOD), null, new ShopItems[]{ShopItems.COBBLESTONE_TRADE, ShopItems.DIRT_TRADE, ShopItems.OBSIDIAN_TRADE}, false, true);
+    BLOCK_TRADING(ChatColor.YELLOW + "Trades", ChatColor.YELLOW + "Trades", new ItemStack(Material.WOOD), null, new ShopItems[]{ShopItems.COBBLESTONE_TRADE, ShopItems.DIRT_TRADE, ShopItems.OBSIDIAN_TRADE, ShopItems.REDSTONE_TRADE}, false, true),
+    ENGINEER_UPGRADES(ChatColor.RED + "Cannon Upgrades", ChatColor.RED + "Redstone", new ItemStack(Material.REDSTONE), new ItemStack(Material.REDSTONE), new ShopItems[] {ShopItems.CANNON_SPEED_UPGRADE, ShopItems.CANNON_DAMAGE_UPGRADE, ShopItems.CANNON_RANGE_UPGRADE}, true, false);
 
 
     private String name;
@@ -71,6 +75,8 @@ public enum Shops {
 
        if(mat.getType().equals(Material.INK_SACK)) return Shops.LAPIS;
        else if (mat.getType().equals(Material.IRON_INGOT)) return Shops.IRON_INGOT;
+       else if (mat.getType().equals(Material.REDSTONE)) return Shops.ENGINEER_UPGRADES;
+       else if (mat.getType().equals(Material.WOOD)) return Shops.BLOCK_TRADING;
        else {
            String s = ChatColor.stripColor(mat.getItemMeta().getDisplayName());
 
@@ -81,5 +87,15 @@ public enum Shops {
        }
 
 
+    }
+
+    public int getPurchasebleItems(Arena arena, Shops shop) {
+        int purchaseableItems = 0;
+        for (ShopItems item : shop.getItems()) {
+            if (arena.getType().equals(GameType.MODIFIER) && item.vanillaOnly()) continue;
+            if (arena.getType().equals(GameType.VANILLA) && item.modifierOnly()) continue;
+            purchaseableItems++;
+        }
+        return purchaseableItems;
     }
 }

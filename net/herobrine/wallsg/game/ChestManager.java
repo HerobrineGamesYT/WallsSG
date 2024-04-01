@@ -26,18 +26,17 @@ public class ChestManager implements Listener {
 	public static ChestManager instance;
 
 	public ChestManager() {
-
 		instance = this;
 	}
 
 	private final Set<Location> openedChests = new HashSet<>();
 
-	public void fill(Inventory inventory) {
+	public void fill(Inventory inventory, Arena arena) {
 
 		inventory.clear();
 
 		ThreadLocalRandom random = ThreadLocalRandom.current();
-		int maxSlots = random.nextInt(4, 6);
+		int maxSlots = random.nextInt(6, 10);
 
 		List<Integer> filledSlotsList = new ArrayList<>();
 
@@ -49,7 +48,7 @@ public class ChestManager implements Listener {
 			if (!filledSlotsList.contains(slotIndex)) {
 				if (randomItem.shouldFill(random, randomItem.baseSpawnChance())) {
 
-					ItemStack item = randomItem.make(random, randomItem);
+					ItemStack item = randomItem.make(random, randomItem, arena);
 
 					inventory.setItem(slotIndex, item);
 					filledSlotsList.add(slotIndex);
@@ -99,7 +98,7 @@ public class ChestManager implements Listener {
 				if (arena.getGame(arena.getID()).equals(Games.WALLS_SG) && arena.getState().equals(GameState.LIVE)) {
 					if (!hasBeenOpened(chest.getLocation())) {
 						markAsOpened(chest.getLocation());
-						fill(chest.getInventory());
+						fill(chest.getInventory(), arena);
 
 					}
 

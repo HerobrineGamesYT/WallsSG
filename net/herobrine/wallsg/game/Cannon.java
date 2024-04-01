@@ -62,8 +62,6 @@ public class Cannon {
         this.friendlyTeam = friendlyTeam;
         this.cannonOwner = cannonOwner;
         this.isActive = isActive;
-
-        setAttackRange(10.0);
     }
 
     public void setDamageRange(double i) {
@@ -82,9 +80,9 @@ public class Cannon {
         this.damage = i;
     }
 
-    public void setAttackRange(double i) {
-        this.attackRange = i;
-    }
+    public void setAttackRange(double i) {this.attackRange = i;}
+
+    public void setProjectileRange(double i) {this.projectileRange = i;}
 
     public void setHitLocation(Location location) {
         this.hitLocation = location;
@@ -254,6 +252,7 @@ public class Cannon {
             this.isCannonballGolden = false;
         }
     }
+
 
     public void shootTarget() {
         if (hasTarget()) {

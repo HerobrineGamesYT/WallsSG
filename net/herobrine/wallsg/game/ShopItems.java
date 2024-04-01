@@ -6,6 +6,7 @@ import net.herobrine.gamecore.ClassTypes;
 import net.herobrine.gamecore.ItemBuilder;
 import net.herobrine.gamecore.Manager;
 import net.herobrine.wallsg.Game;
+import net.herobrine.wallsg.NBTReader;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -27,115 +28,128 @@ public enum ShopItems {
 
     EMERALD_BLADE(ChatColor.GREEN + "Emerald Blade", 6, 1, Material.EMERALD, null, new String[] {}, new Enchantment[]{Enchantment.DAMAGE_ALL},
             10, 0, 0, null, 0, 0, false,  false,
-            false, false, false, false, false, null, 0, Shops.EMERALD, false, null),
+            false, false, false, false, false, null, 0, Shops.EMERALD, false, null, false, null, false, false),
     EMERALD_HELMET(ChatColor.GREEN + "Emerald Helmet", 3, 1, Material.LEATHER_HELMET, Color.fromRGB(56, 217, 56),
             new String[] {ChatColor.GREEN + "Defense is slightly better than Protection 3 Diamond Armor", "", ChatColor.GREEN +
                     "A piece of armor so legendary,", ChatColor.GREEN + "Emerus once wore it in battle.",
                     "", ChatColor.GOLD + "Full Set Bonus: Emerus's Wind", ChatColor.GRAY + "Gain speed 2 while wearing."}, new Enchantment[] {Enchantment.PROTECTION_ENVIRONMENTAL},
             9, 0, 0, null, 0, 0, false, true, false,
-            true, true, false, false, null, 0, Shops.EMERALD, false, null),
+            true, true, false, false, null, 0, Shops.EMERALD, false, null, false, null, false, false),
     EMERALD_CHESTPLATE(ChatColor.GREEN + "Emerald Chestplate", 5, 1, Material.LEATHER_CHESTPLATE, Color.fromRGB(56, 217, 56),
             new String[] {ChatColor.GREEN + "Defense is slightly better than Protection 3 Diamond Armor", "", ChatColor.GREEN +
                     "A piece of armor so legendary,", ChatColor.GREEN + "Emerus once wore it in battle.",
                     "", ChatColor.GOLD + "Full Set Bonus: Emerus's Wind", ChatColor.GRAY + "Gain speed 2 while wearing."},
             new Enchantment[] {Enchantment.PROTECTION_ENVIRONMENTAL},
             9,0,0,null, 0, 0, false, true, false, true,
-            true, false, false, null, 0, Shops.EMERALD, false, null),
+            true, false, false, null, 0, Shops.EMERALD, false, null, false, null, false, false),
     EMERALD_LEGGINGS(ChatColor.GREEN + "Emerald Leggings", 4, 1, Material.LEATHER_LEGGINGS, Color.fromRGB(56, 217, 56),
             new String[] {ChatColor.GREEN + "Defense is slightly better than Protection 3 Diamond Armor", "", ChatColor.GREEN +
                     "A piece of armor so legendary,", ChatColor.GREEN + "Emerus once wore it in battle.",
                     "", ChatColor.GOLD + "Full Set Bonus: Emerus's Wind", ChatColor.GRAY + "Gain speed 2 while wearing."},
             new Enchantment[] {Enchantment.PROTECTION_ENVIRONMENTAL},
             9,0,0,null, 0, 0, false, true, false, true,
-            true, false, false, null, 0, Shops.EMERALD, false, null),
+            true, false, false, null, 0, Shops.EMERALD, false, null, false, null, false, false),
     EMERALD_BOOTS(ChatColor.GREEN + "Emerald Boots", 2, 1, Material.LEATHER_BOOTS, Color.fromRGB(56, 217, 56),
             new String[] {ChatColor.GREEN + "Defense is slightly better than Protection 3 Diamond Armor", "", ChatColor.GREEN +
                     "A piece of armor so legendary,", ChatColor.GREEN + "Emerus once wore it in battle.",
                     "", ChatColor.GOLD + "Full Set Bonus: Emerus's Wind", ChatColor.GRAY + "Gain speed 2 while wearing."},
             new Enchantment[] {Enchantment.PROTECTION_ENVIRONMENTAL},
             9,0,0,null, 0, 0, false, true, false, true,
-            true, false, false, null, 0,Shops.EMERALD, false, null),
+            true, false, false, null, 0,Shops.EMERALD, false, null, false, null, false, false),
     STRENGTH_POTION(ChatColor.GREEN + "Strength Potion", 4, 1, Material.POTION, null, new String[] {ChatColor.GRAY + "Strength (0:07)", "",
     ChatColor.GREEN + "Give a powerful strength effect to yourself."}, null,  0,0 ,0, PotionEffectType.INCREASE_DAMAGE,
-            7, 1, false, false, false, false, false, true, false, null, 0, Shops.EMERALD, false, null),
+            7, 1, false, false, false, false, false, true, false, null, 0, Shops.EMERALD, false, null, false, null, false, false),
     DIAMOND_SWORD(ChatColor.AQUA + "Diamond Sword", 2, 1, Material.DIAMOND_SWORD, null, new String[] {}, new Enchantment[] {},
-            0 ,0 ,0, null, 0,0, false, false, false, false, false, false, false, null, 0, Shops.DIAMOND, false, null),
+            0 ,0 ,0, null, 0,0, false, false, false, false, false, false, false, null, 0, Shops.DIAMOND, false, null, false, null, false, false),
     DIAMOND_HELMET(ChatColor.AQUA + "Diamond Helmet", 4, 1, Material.DIAMOND_HELMET, null, new String[] {}, new Enchantment[] {}, 0,0 ,0,
-            null, 0,0, false, false, false, false, false, false, false, null, 0, Shops.DIAMOND,false, null),
+            null, 0,0, false, false, false, false, false, false, false, null, 0, Shops.DIAMOND,false, null, false, null, false, false),
     DIAMOND_CHESTPLATE(ChatColor.AQUA + "Diamond Chestplate", 7, 1, Material.DIAMOND_CHESTPLATE, null, new String[] {}, new Enchantment[] {}, 0,0 ,0,
-            null, 0,0, false, false, false, false, false, false, false, null, 0,Shops.DIAMOND, false, null),
+            null, 0,0, false, false, false, false, false, false, false, null, 0,Shops.DIAMOND, false, null, false, null, false, false),
     DIAMOND_LEGGINGS(ChatColor.AQUA + "Diamond Leggings", 6, 1, Material.DIAMOND_LEGGINGS, null, new String[] {}, new Enchantment[] {}, 0,0 ,0,
-            null, 0,0, false, false, false, false, false, false, false, null, 0,Shops.DIAMOND, false, null),
+            null, 0,0, false, false, false, false, false, false, false, null, 0,Shops.DIAMOND, false, null, false, null, false, false),
     DIAMOND_BOOTS(ChatColor.AQUA + "Diamond Boots", 2, 1, Material.DIAMOND_BOOTS, null, new String[] {}, new Enchantment[] {}, 0,0 ,0,
-            null, 0,0, false, false, false, false, false, false, false, null, 0,Shops.DIAMOND, false, null),
+            null, 0,0, false, false, false, false, false, false, false, null, 0,Shops.DIAMOND, false, null, false, null, false, false),
     PICKAXE_UPGRADE(ChatColor.AQUA + "Diamond Pickaxe", 5, 1, Material.DIAMOND_PICKAXE, null, new String[]
             {ChatColor.AQUA + "The best pickaxe for", ChatColor.AQUA + "all your mining needs!"}, new Enchantment[] {Enchantment.DIG_SPEED, Enchantment.DURABILITY},
             4, 3, 0, null, 0,0, false, false, false, false,
-            false, false, false, null, 0, Shops.DIAMOND, false, null),
+            false, false, false, null, 0, Shops.DIAMOND, false, null, false, null, false, false),
     EXP_BOTTLES(ChatColor.BLUE + "XP Bottle", 3, 32, Material.EXP_BOTTLE, null, new String[] {ChatColor.BLUE + "Required for enchants."},
             new Enchantment[] {}, 0 ,0 ,0, null, 0,0,
-            false,false,false,false,false,false, false, null, 0, Shops.LAPIS, false, null),
+            false,false,false,false,false,false, false, null, 0, Shops.LAPIS, false, null, false, null, false, false),
     PROTECTION_BOOK(ChatColor.BLUE + "Protection 1", 8, 1, Material.ENCHANTED_BOOK, null,
             new String[] {ChatColor.BLUE + "Apply to your item using the anvil", ChatColor.BLUE + "next to the shopkeeper!"},
             new Enchantment[] {Enchantment.PROTECTION_ENVIRONMENTAL}, 1 ,0 ,0, null, 0,0,
-            true,false,false,false,false,false, false, null, 0, Shops.LAPIS, false, null),
+            true,false,false,false,false,false, false, null, 0, Shops.LAPIS, false, null, false, null, false, false),
     SHARPNESS_BOOK(ChatColor.BLUE + "Sharpness 1", 7, 1, Material.ENCHANTED_BOOK, null,
             new String[] {ChatColor.BLUE + "Apply to your item using the anvil", ChatColor.BLUE + "next to the shopkeeper!"},
             new Enchantment[] {Enchantment.DAMAGE_ALL}, 1 ,0 ,0, null, 0,0,
-            true,false,false,false,false,false,  false, null, 0, Shops.LAPIS, false, null),
+            true,false,false,false,false,false,  false, null, 0, Shops.LAPIS, false, null, false, null, false, false),
     POWER_BOOK(ChatColor.BLUE + "Power 1", 6, 1, Material.ENCHANTED_BOOK, null,
             new String[] {ChatColor.BLUE + "Apply to your item using the anvil", ChatColor.BLUE + "next to the shopkeeper!"},
             new Enchantment[] {Enchantment.ARROW_DAMAGE}, 1 ,0 ,0, null, 0,0,
-            true,false,false,false,false,false,  false, null, 0, Shops.LAPIS, false, null),
+            true,false,false,false,false,false,  false, null, 0, Shops.LAPIS, false, null, false, null, false, false),
     GOLDEN_APPLE(ChatColor.GOLD + "Golden Apple", 3, 1,Material.GOLDEN_APPLE, null, new String[] {}, new Enchantment[] {},
             0,0,0,null, 0,0, false, false, false, false,
-            false, false,  false, null, 0, Shops.GOLD, false, null),
+            false, false,  false, null, 0, Shops.GOLD, false, null, false, null, false, false),
     HEALING_1(ChatColor.translateAlternateColorCodes('&', "&6Instant Health (&f2.0 &c❤&6)"), 2, 1, Material.POTION, null, new String[] {},
             new Enchantment[] {}, 0,0,0, PotionEffectType.HEAL, 0,0, false,
-            false, false, false, false, true,  false, null, 0, Shops.GOLD, false, null),
+            false, false, false, false, true,  false, null, 0, Shops.GOLD, false, null, false, null, false, false),
     HEALING_2(ChatColor.translateAlternateColorCodes('&', "&6Instant Health (&f4.0 &c❤&6)"), 5, 1, Material.POTION, null, new String[] {},
             new Enchantment[] {}, 0,0,0, PotionEffectType.HEAL, 0,1, false,
-            false, false, false, false, true, false, null, 0, Shops.GOLD, false, null),
+            false, false, false, false, true, false, null, 0, Shops.GOLD, false, null, false, null, false, false),
     IRON_SWORD(ChatColor.GRAY + "Iron Sword", 2, 1, Material.IRON_SWORD, null, new String[] {},
             new Enchantment[] {}, 0,0,0, null, 0,0, false, false, false,
-            false, false, false,  false, null, 0, Shops.IRON_INGOT, false, null),
+            false, false, false,  false, null, 0, Shops.IRON_INGOT, false, null, false, null, false, false),
     IRON_HELMET(ChatColor.GRAY + "Iron Helmet", 4, 1, Material.IRON_HELMET, null, new String[] {},
             new Enchantment[] {}, 0,0,0, null, 0,0, false, false, false,
-            false, false, false,  false, null, 0, Shops.IRON_INGOT, false, null),
+            false, false, false,  false, null, 0, Shops.IRON_INGOT, false, null, false, null, false, false),
     IRON_CHESTPLATE(ChatColor.GRAY + "Iron Chestplate", 7, 1, Material.IRON_CHESTPLATE, null, new String[] {},
             new Enchantment[] {}, 0,0,0, null, 0,0, false, false, false,
-            false, false, false,  false, null, 0, Shops.IRON_INGOT, false, null),
+            false, false, false,  false, null, 0, Shops.IRON_INGOT, false, null, false, null, false, false),
     IRON_LEGGINGS(ChatColor.GRAY + "Iron Leggings", 6, 1, Material.IRON_LEGGINGS, null, new String[] {},
             new Enchantment[] {}, 0,0,0, null, 0,0, false, false, false,
-            false, false, false,  false, null, 0, Shops.IRON_INGOT, false, null),
+            false, false, false,  false, null, 0, Shops.IRON_INGOT, false, null, false, null, false, false),
     IRON_BOOTS(ChatColor.GRAY + "Iron Boots", 2, 1, Material.IRON_BOOTS, null, new String[] {},
             new Enchantment[] {}, 0,0,0, null, 0,0, false, false, false,
-            false, false, false,  false, null, 0, Shops.IRON_INGOT, false, null),
+            false, false, false,  false, null, 0, Shops.IRON_INGOT, false, null, false, null, false, false),
     BOW(ChatColor.GRAY + "Simple Bow", 1, 1, Material.BOW, null, new String[] {}, new Enchantment[] {},
             0,0,0, null, 0,0,false, false, false,
-            false ,false, false, false, Material.STRING, 2, Shops.IRON_INGOT, false, null),
+            false ,false, false, true, Material.STRING, 2, Shops.IRON_INGOT, false, null, false, null, false, false),
     PACK_OF_ARROWS(ChatColor.GRAY + "Arrows", 2, 16, Material.ARROW, null, new String[] {}, new Enchantment[] {},
             0,0,0,null,0,0, false, false, false, false,
-            false, false, false, null, 0, Shops.IRON_INGOT, false, null),
+            false, false, false, null, 0, Shops.IRON_INGOT, false, null, false, null, false, false),
     FISHING_ROD(ChatColor.DARK_GRAY + "Fishing Rod", 5, 1, Material.FISHING_ROD, null, new String[] {},
             new Enchantment[] {}, 0,0,0, null, 0,0, false, false ,
-            false, false, false, false, false, null, 0, Shops.COAL, false, null),
+            false, false, false, false, false, null, 0, Shops.COAL, false, null, false, null, false, false),
     WATER_BUCKET(ChatColor.DARK_GRAY + "Water Bucket", 6, 1, Material.WATER_BUCKET, null, new String[] {},
             new Enchantment[] {}, 0,0,0, null, 0,0, false, false ,
-            false, false, false, false, false, null, 0, Shops.COAL, false, null),
+            false, false, false, false, false, null, 0, Shops.COAL, false, null, false, null, false, false),
     ENDER_PEARL(ChatColor.DARK_GRAY + "Ender Pearl", 10, 1, Material.ENDER_PEARL, null, new String[] {ChatColor.GRAY + "A secret lies within" + ChatColor.GREEN + " emeralds...", ChatColor.DARK_GRAY + "A worthy investment, I tell you!"},
             new Enchantment[] {}, 0,0,0, null, 0,0, false, false ,
-            false, false, false, false, false, null, 0, Shops.COAL,false, null),
+            false, false, false, false, false, null, 0, Shops.COAL,false, null, false, null, false, false),
     DIRT_TRADE(ChatColor.DARK_GRAY + "Dirt Trade", 5, 5, Material.DIRT, null, new String[] {},
             new Enchantment[] {}, 0,0,0, null, 0,0, false, false,
-            false, false, false, false, false, null, 0, Shops.BLOCK_TRADING, true, Trades.DIRT_TRADE),
+            false, false, false, false, false, null, 0, Shops.BLOCK_TRADING, true, Trades.DIRT_TRADE, false, null, false, false),
     COBBLESTONE_TRADE(ChatColor.GRAY + "Cobblestone Trade", 8, 8, Material.COBBLESTONE, null, new String[] {},
             new Enchantment[] {}, 0,0,0, null, 0,0, false, false,
-            false, false, false, false, false, null, 0, Shops.BLOCK_TRADING, true, Trades.COBBLESTONE_TRADE),
+            false, false, false, false, false, null, 0, Shops.BLOCK_TRADING, true, Trades.COBBLESTONE_TRADE, false, null, false, false),
     OBSIDIAN_TRADE(ChatColor.DARK_PURPLE + "Obsidian Trade", 5, 5, Material.OBSIDIAN, null, new String[] {},
             new Enchantment[] {}, 0,0,0, null, 0,0, false, false,
             false, false, false, false, false, null, 0,
-            Shops.BLOCK_TRADING,true, Trades.OBSIDIAN_TRADE);
+            Shops.BLOCK_TRADING,true, Trades.OBSIDIAN_TRADE, false, null, true, false),
+
+    CANNON_SPEED_UPGRADE(ChatColor.RED + "Cannon Hitspeed Upgrade", 0, 1, Material.SUGAR, null, new String[]{ChatColor.GREEN + "Upgrade your cannon hitspeed!"},
+    new Enchantment[] {}, 0, 0,0,null, 0,0, false, false,
+            false, false, false, false, false, null, 0, Shops.ENGINEER_UPGRADES, false, null, true, Upgrades.CANNON_SPEED_UPGRADE, false, true),
+    CANNON_DAMAGE_UPGRADE(ChatColor.RED + "Cannon Damage Upgrade", 0, 1, Material.DIAMOND_SWORD, null, new String[]{ChatColor.GREEN + "Upgrade your cannon damage!"},
+            new Enchantment[] {}, 0, 0,0,null, 0,0, false, false,
+            false, false, false, false, false, null, 0, Shops.ENGINEER_UPGRADES, false, null, true, Upgrades.CANNON_DAMAGE_UPGRADE, false, true),
+    CANNON_RANGE_UPGRADE(ChatColor.RED + "Cannon Range Upgrade", 0, 1, Material.BOW, null, new String[]{ChatColor.GREEN + "Upgrade your cannon range!"},
+            new Enchantment[] {}, 0, 0,0,null, 0,0, false, false,
+            false, false, false, false, false, null, 0, Shops.ENGINEER_UPGRADES, false, null, true, Upgrades.CANNON_RANGE_UPGRADE, false, true),
+    REDSTONE_TRADE(ChatColor.RED + "Redstone Trade", 5, 5,Material.REDSTONE, null, new String[] {ChatColor.RED + "Not playing Engineer? Get something more useful!"},
+            new Enchantment[] {}, 0,0,0,null,0,0,false, false,false,false,false,
+            false,false,null,0,Shops.BLOCK_TRADING,true,Trades.REDSTONE_TRADE,false,null,false,true);
 
 
 // displayname, price, material, lore, enchantments[],
@@ -166,10 +180,18 @@ public enum ShopItems {
     private boolean isTrade;
     private Trades trade;
 
+    private boolean isUpgrade;
+
+    private Upgrades upgrade;
+
+    private boolean vanillaOnly;
+
+    private boolean modifierOnly;
+
     private ShopItems(String displayName, int price, int count, Material material, Color color, String[] lore, Enchantment[] enchantments, int enchLvl,
                       int enchLvl1, int enchLvl2, PotionEffectType effectType, int duration, int amplifier, boolean isEnchantmentBook, boolean hideEnchantments,
                       boolean hideAttributes, boolean isUnbreakable, boolean isLeatherArmor, boolean isPotion,boolean hasCraftFee, Material craftMaterial,
-                      int craftFee, Shops shop, boolean isTrade, Trades trade) {
+                      int craftFee, Shops shop, boolean isTrade, Trades trade, boolean isUpgrade, Upgrades upgrade, boolean vanillaOnly, boolean modifierOnly) {
         this.displayName = displayName;
         this.price = price;
         this.count = count;
@@ -195,13 +217,17 @@ public enum ShopItems {
         this.shop = shop;
         this.isTrade = isTrade;
         this.trade = trade;
+        this.isUpgrade = isUpgrade;
+        this.upgrade = upgrade;
+        this.vanillaOnly = vanillaOnly;
+        this.modifierOnly = modifierOnly;
 
     }
 
 // creates item for GUI. if there is an economist, it will create within the GUI a special version of the item that has a reduced price.
-    public ItemStack createItem(ShopItems item, Shops shopType, boolean isEconomist) {
+    public ItemStack createItem(ShopItems item, Shops shopType, boolean isEconomist, Player player) {
         ItemBuilder i = new ItemBuilder(item.material);
-        if (!item.isEnchantmentBook && !item.isPotion && !item.isTrade) {
+        if (!item.isEnchantmentBook && !item.isPotion && !item.isTrade && !item.isUpgrade) {
             int iterator = 0;
             for (Enchantment enchantment : item.enchantments) {
                 if (iterator == 0)
@@ -230,9 +256,11 @@ public enum ShopItems {
                 i.addItemFlag(ItemFlag.HIDE_UNBREAKABLE);
                 i.setUnbreakable(true);
             }
+            NBTReader builtItem = new NBTReader(i.build());
 
+            builtItem.writeStringNBT("id", item::name);
 
-            return i.build();
+            return builtItem.toBukkit();
         }
         else if (item.isPotion) {
             PotionMeta potion = (PotionMeta) i.getItemMeta();
@@ -246,8 +274,11 @@ public enum ShopItems {
             i.setAmount(item.count);
 
             if(item.hideAttributes) i.addItemFlag(ItemFlag.HIDE_ATTRIBUTES);
+            NBTReader builtItem = new NBTReader(i.build());
 
-            return i.build();
+            builtItem.writeStringNBT("id", item::name);
+
+            return builtItem.toBukkit();
 
         }
         else if (isEnchantmentBook) {
@@ -279,29 +310,56 @@ public enum ShopItems {
                 i.addItemFlag(ItemFlag.HIDE_UNBREAKABLE);
                 i.setUnbreakable(true);
             }
-            return i.build();
+            NBTReader builtItem = new NBTReader(i.build());
+
+            builtItem.writeStringNBT("id", item::name);
+
+            return builtItem.toBukkit();
 
 
         }
-        else {
+        else if (item.isTrade) {
 
             i.setDisplayName(item.displayName);
             i.setAmount(item.count);
             i.setLore(item.getTrade(item).addPriceToLore(item, item.trade));
 
-            return i.build();
+            NBTReader builtItem = new NBTReader(i.build());
+
+            builtItem.writeStringNBT("id", item::name);
+
+            return builtItem.toBukkit();
+        }
+        else {
+            i.setDisplayName(item.displayName);
+            i.setAmount(item.count);
+            i.setLore(item.getUpgrade(item).createUpgradeLore(item, item.upgrade, player, Manager.getArena(player)));
+            NBTReader builtItem = new NBTReader(i.build());
+
+            builtItem.writeStringNBT("id", item::name);
+
+            return builtItem.toBukkit();
         }
     }
 
 
     // When you successfully purchase an item in the GUI, the ItemStack will be created and given to the player.
-    public void purchaseItem(ShopItems item, Shops shop, Player player, boolean isEconomist) {
+    public void purchaseItem(ShopItems item, Shops shop, Player player, boolean isEconomist, int slot) {
         // checking if player is able to buy item
+        if (item.isUpgrade) {
+            Upgrades.valueOf(item.name()).doUpgrade(Upgrades.valueOf(item.name()), player, Manager.getArena(player), slot);
+            return;
+        }
+        if (player.getInventory().firstEmpty() == -1) {
+            player.sendMessage(ChatColor.RED + "Your inventory is full!");
+            player.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1f, .7f);
+            return;
+        }
+
         if (item.isTrade) {
             Trades.valueOf(item.name()).conductTrade(Trades.valueOf(item.name()), player);
             return;
         }
-
         if (!player.getInventory().containsAtLeast(shop.getCurrency(), item.getPrice(item, player, isEconomist))) {
             player.sendMessage(ChatColor.RED + "You do not have enough resources to buy this item!");
             player.playSound(player.getLocation(), Sound.VILLAGER_NO, 1f, 1f);
@@ -459,6 +517,13 @@ public enum ShopItems {
         return trade;
     }
 
+    public Upgrades getUpgrade(ShopItems item) {return upgrade;}
+
+    public boolean isUpgrade() {return isUpgrade;}
+
+    public boolean vanillaOnly() {return vanillaOnly;}
+
+    public boolean modifierOnly() {return modifierOnly;}
     public Pair<Material, Integer> getCraftFee(ShopItems item) {
         if (item.hasCraftFee) {
             Pair itemCraftFee = new Pair<Material, Integer>(item.craftMaterial, item.craftFee);

@@ -9,11 +9,13 @@ import net.herobrine.gamecore.*;
 import net.herobrine.wallsg.game.CustomDeathCause;
 import net.herobrine.wallsg.game.ShopItems;
 import net.herobrine.wallsg.game.Shops;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import net.minecraft.server.v1_8_R3.PacketPlayOutCamera;
+import net.minecraft.server.v1_8_R3.PacketPlayOutWindowData;
+import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -32,12 +34,14 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -155,7 +159,9 @@ public class GameListener implements Listener {
 			} else if (e.getBlock().getType().equals(Material.DIAMOND_ORE)
 					|| e.getBlock().getType().equals(Material.COAL_ORE)
 					|| e.getBlock().getType().equals(Material.EMERALD_ORE)
-					|| e.getBlock().getType().equals(Material.LAPIS_ORE)) {
+					|| e.getBlock().getType().equals(Material.LAPIS_ORE)
+					|| e.getBlock().getType().equals(Material.REDSTONE_ORE)
+					|| e.getBlock().getType().equals(Material.GLOWING_REDSTONE_ORE)) {
 
 				e.setCancelled(false);
 			} else if (e.getBlock().getType().equals(Material.OBSIDIAN) || e.getBlock().getType().equals(Material.WEB) || e.getBlock().getType().equals(Material.WOOD)) {
@@ -197,13 +203,26 @@ public class GameListener implements Listener {
 				player.playSound(player.getLocation(), Sound.VILLAGER_NO, 1f, 1f);
 				player.sendMessage(ChatColor.RED + "You cannot place crafting tables! Buy items from the shop NPC!");
 			}
-			else if (e.getBlock().getType().equals(Material.STRING)
-					|| e.getBlock().getType().equals(Material.TRIPWIRE)) {
+			else if (e.getBlock().getType().equals(Material.TRIPWIRE)) {
+				player.getInventory().addItem(new ItemStack(Material.STRING, 1));
+				player.getInventory().removeItem(new ItemStack(Material.STRING, 1));
+				e.getBlock().setType(Material.AIR);
+				e.setCancelled(true);
+			}
+			else if (e.getBlock().getType().equals(Material.REDSTONE_WIRE)) {
+				player.getInventory().addItem(new ItemStack(Material.REDSTONE, 1));
+				player.getInventory().removeItem(new ItemStack(Material.REDSTONE, 1));
+				e.getBlock().setType(Material.AIR);
 				e.setCancelled(true);
 			}
 			else Game.getPlacedBlockLocations().add(e.getBlock().getLocation());
 
-		} else {
+		}
+		else if (Manager.isPlaying(player) && Manager.getArena(player).getState().equals(GameState.LIVE_ENDING)
+				&& Manager.getArena(player).getGame(Manager.getArena(player).getID()).equals(Games.WALLS_SG)) {
+			e.setCancelled(true);
+		}
+		else {
 			if (!BuildCommand.buildEnabledPlayers.contains(player)) e.setCancelled(true);
 		}
 	}
@@ -569,12 +588,15 @@ public class GameListener implements Listener {
 			Player player = (Player) e.getDamager();
 			if (Manager.isPlaying(player)) {
 				Arena arena = Manager.getArena(player);
-
 				if (e.getEntity() instanceof Player) {
 					Player victim = (Player) e.getEntity();
 					if (Manager.isPlaying(victim)) {
 
-						if (arena.getSpectators().contains(player.getUniqueId())) e.setCancelled(true);
+						if (!arena.getState().equals(GameState.LIVE)) e.setCancelled(true);
+						if (arena.getSpectators().contains(player.getUniqueId())) {
+							e.setCancelled(true);
+							return;
+						}
 						if (arena.getTeam(player).equals(arena.getTeam(victim))
 								&& arena.getGame(arena.getID()).isTeamGame() && arena.getState() == GameState.LIVE) {
 							e.setCancelled(true);
@@ -598,7 +620,10 @@ public class GameListener implements Listener {
 					if (arrow.getShooter() instanceof Player) {
 						Player shooter = (Player) arrow.getShooter();
 						if (arena.getTeam(shooter) == arena.getTeam(victim) || arena.getState() != GameState.LIVE || arena.getSpectators().contains(shooter.getUniqueId())) e.setCancelled(true);
-						else e.setCancelled(false);
+						else {
+							e.setCancelled(false);
+							if (arrow.isCritical()) shooter.sendMessage(arena.getTeam(victim).getColor() + victim.getName() + ChatColor.GRAY + " is on " + ChatColor.RED + Math.round(victim.getHealth()) + "HP" + ChatColor.GRAY + "!");
+						}
 					}
 				}
 				else e.setCancelled(true);
@@ -665,7 +690,12 @@ public class GameListener implements Listener {
 			}
 		}
 
+
 		if (player.getItemInHand() != null && player.getItemInHand().getType() != Material.AIR) {
+			if (player.getItemInHand().getType().equals(Material.REDSTONE) || player.getItemInHand().getType().equals(Material.STRING)) {
+				e.setCancelled(true);
+				player.updateInventory();
+			}
 			if (player.getItemInHand().getItemMeta() != null
 					&& player.getItemInHand().getItemMeta().getDisplayName() != null) {
 				if (player.getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Spectate")) {
@@ -730,8 +760,33 @@ public class GameListener implements Listener {
 			}
 		}
 
+		Arena arena = null;
+		if (Manager.isPlaying(player)) arena = Manager.getArena(player);
+		if (arena == null) return;
+		if (!arena.getState().equals(GameState.LIVE) || !arena.getGame().equals(Games.WALLS_SG)) return;
+		if (!arena.getSpectators().contains(player.getUniqueId())) return;
+		if (!(entity instanceof Player)) return;
+		if (!Game.getAlivePlayers().contains(entity.getUniqueId())) return;
+		CraftPlayer p = (CraftPlayer) player;
+		player.setGameMode(GameMode.SPECTATOR);
+		p.getHandle().setSpectatorTarget(((CraftEntity)entity).getHandle());
+		GameCoreMain.getInstance().sendTitle(player, "&aSpectating " + entity.getName(), "&c&lSNEAK &7to stop spectating!", 0, 1, 0);
 	}
 
+	@EventHandler
+	public void onSneak(PlayerToggleSneakEvent e) {
+		Player player = e.getPlayer();
+		Arena arena = null;
+		if (Manager.isPlaying(player)) arena = Manager.getArena(player);
+		if (arena == null) return;
+		if (!arena.getState().equals(GameState.LIVE) || !arena.getGame().equals(Games.WALLS_SG)) return;
+		if (!arena.getSpectators().contains(player.getUniqueId())) return;
+		CraftPlayer p = (CraftPlayer) player;
+		player.teleport(player.getSpectatorTarget().getLocation());
+		p.getHandle().setSpectatorTarget(((CraftEntity)player).getHandle());
+		player.setGameMode(GameMode.ADVENTURE);
+		player.setAllowFlight(true);
+	}
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onInventoryClick(InventoryClickEvent e) {
@@ -770,6 +825,9 @@ public class GameListener implements Listener {
 				case WOOD:
 					Menus.applyShop(player, Shops.BLOCK_TRADING);
 					break;
+					case REDSTONE:
+						Menus.applyShop(player, Shops.ENGINEER_UPGRADES);
+					break;
 				default:
 					return;
 				}
@@ -782,37 +840,30 @@ public class GameListener implements Listener {
 
 			Shops clickedShop = Shops.getShopFromMaterial(e.getClickedInventory().getItem(4));
 			ShopItems clickedItem = null;
-			try {
-				if (e.getSlot() == 0) Menus.applyShopHome(player);
-				else if (e.getSlot() != 4 && clickedShop.getItems().length > 3 && clickedShop.getItems().length <= 7)
-					clickedItem = clickedShop.getItems()[e.getSlot() - 19];
-				else if (e.getSlot() != 4 && clickedShop.getItems().length <= 3 && clickedShop.getItems().length != 1)
-					clickedItem = clickedShop.getItems()[e.getSlot() - 21];
-				else if (e.getSlot() != 4 && clickedShop.getItems().length == 1)
-					clickedItem = clickedShop.getItems()[0];
-				else if (e.getInventory().getItem(e.getSlot()) != null && e.getSlot() != 4 && e.getSlot() != 0 && clickedShop.getItems().length > 7) {
-					int lines = 0; // represents how many passed empty slots need to be removed from index to get correct index from slot
-					if (e.getSlot() > 27 && e.getSlot() < 36) lines = 2;
-					else if (e.getSlot() > 36 && e.getSlot() < 45) lines = 4;
-					else if (e.getSlot() > 45 && e.getSlot() < 53) lines = 6;
 
-					clickedItem = clickedShop.getItems()[e.getSlot() - 19 - lines];
+			if (e.getCurrentItem() != null && e.getCurrentItem().getType() != Material.AIR) {
+				if (e.getSlot() == 0) {
+					Menus.applyShopHome(player);
+					return;
 				}
+				ItemStack item = e.getCurrentItem();
+				NBTReader reader = new NBTReader(item);
 
-			}
-			catch(ArrayIndexOutOfBoundsException exception) {
-				return;
+				try {
+					clickedItem = ShopItems.valueOf(reader.getStringNBT("id").get());
+				}
+				catch(IllegalArgumentException ignored){}
+
 			}
 
 			if (clickedItem != null) {
-				if(arena.getType() != GameType.MODIFIER) clickedItem.purchaseItem(clickedItem, clickedShop, player, false);
-				else if (arena.getClass(player) != null && arena.getClass(player).getShopDiscount() != 0) clickedItem.purchaseItem(clickedItem, clickedShop, player, true);
-				else clickedItem.purchaseItem(clickedItem, clickedShop, player, false);
+				if(arena.getType() != GameType.MODIFIER) clickedItem.purchaseItem(clickedItem, clickedShop, player, false, e.getSlot());
+				else if (arena.getClass(player) != null && arena.getClass(player).getShopDiscount() != 0) clickedItem.purchaseItem(clickedItem, clickedShop, player, true, e.getSlot());
+				else clickedItem.purchaseItem(clickedItem, clickedShop, player, false, e.getSlot());
 			}
 		}
 
 		else if (e.getClickedInventory() != null && e.getClickedInventory().getType().equals(InventoryType.ANVIL)) {
-
 			if (e.getRawSlot() == 2) {
 				Block b = anvilMap.get(player.getUniqueId());
 				// prevents anvil from taking damage
@@ -904,12 +955,10 @@ public class GameListener implements Listener {
 								meta.setDisplayName(itemName);
 								stack.setItemMeta(meta);
 							}
-
 							meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
 									e.getCurrentItem().getItemMeta().getDisplayName()));
 							stack.setItemMeta(meta);
 						}
-
 					}
 
 				}
@@ -917,6 +966,7 @@ public class GameListener implements Listener {
 			}
 
 		}
+
 
 	}
 

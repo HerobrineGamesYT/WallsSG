@@ -41,8 +41,14 @@ public class WallsMain extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new GameListener(), this);
 		Bukkit.getPluginManager().registerEvents(new ChestManager(), this);
 		getCommand("wsgdev").setExecutor(new DevCommand());
-
 	}
+
+
+
+
+	public void repair() {return;}
+
+
 
 	public static WallsMain getInstance() {
 		return instance;

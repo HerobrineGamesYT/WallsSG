@@ -137,6 +137,11 @@ public class Menus {
 		blockMeta.setDisplayName(ChatColor.YELLOW + "Block Trading");
 		block.setItemMeta(blockMeta);
 
+
+
+		ItemBuilder upgrades = new ItemBuilder(Material.REDSTONE);
+		upgrades.setDisplayName(Shops.ENGINEER_UPGRADES.getName());
+
 		shopHome.setItem(0, downGlass);
 		shopHome.setItem(1, downGlass);
 		shopHome.setItem(2, downGlass);
@@ -159,7 +164,11 @@ public class Menus {
 		shopHome.setItem(19, upGlass);
 		shopHome.setItem(20, upGlass);
 		shopHome.setItem(21, upGlass);
-		shopHome.setItem(22, upGlass);
+		if (Manager.getArena(player).getType() == GameType.MODIFIER){
+			if (Manager.getArena(player).getClass(player).equals(ClassTypes.ENGINEER)) shopHome.setItem(22, upgrades.build());
+			else shopHome.setItem(22, upGlass);
+		}
+		else shopHome.setItem(22, upGlass);
 		shopHome.setItem(23, upGlass);
 		shopHome.setItem(24, upGlass);
 		shopHome.setItem(25, upGlass);
@@ -198,19 +207,28 @@ public class Menus {
 			int i = 0;
 			int startingSlot;
 			int slot;
-			if (shop.getItems().length > 3) {
+			int purchaseableItems = 0;
+			for (ShopItems item : shop.getItems()) {
+				if (Manager.getArena(player).getType().equals(GameType.MODIFIER) && item.vanillaOnly()) continue;
+				if (Manager.getArena(player).getType().equals(GameType.VANILLA) && item.modifierOnly()) continue;
+				purchaseableItems++;
+			}
+
+			if (purchaseableItems > 3) {
 				startingSlot = 21;
 				slot = startingSlot - shop.getItems().length;
 
 				if (slot < 19) slot = 19;
 
 				for (ShopItems item : shop.getItems()) {
+					if (Manager.getArena(player).getType().equals(GameType.MODIFIER) && item.vanillaOnly()) continue;
+					if (Manager.getArena(player).getType().equals(GameType.VANILLA) && item.modifierOnly()) continue;
 					if (i==7) {
 						startingSlot = startingSlot + 7;
 						slot = startingSlot;
 						i = 0;
 					}
-					shopInv.setItem(slot, item.createItem(item, shop, isEconomist));
+					shopInv.setItem(slot, item.createItem(item, shop, isEconomist, player));
 
 					slot = slot + 1;
 
@@ -219,15 +237,17 @@ public class Menus {
 
 			}
 
-			else if (shop.getItems().length == 1) {
-				shopInv.setItem(22, shop.getItems()[0].createItem(shop.getItems()[0], shop, isEconomist));
+			else if (purchaseableItems == 1) {
+				shopInv.setItem(22, shop.getItems()[0].createItem(shop.getItems()[0], shop, isEconomist, player));
 			}
 
 			else {
 				startingSlot = 21;
 
 				for (ShopItems item : shop.getItems()) {
-					shopInv.setItem(startingSlot, item.createItem(item, shop, isEconomist));
+					if (Manager.getArena(player).getType().equals(GameType.MODIFIER) && item.vanillaOnly()) continue;
+					if (Manager.getArena(player).getType().equals(GameType.VANILLA) && item.modifierOnly()) continue;
+					shopInv.setItem(startingSlot, item.createItem(item, shop, isEconomist, player));
 					startingSlot = startingSlot + 1;
 				}
 

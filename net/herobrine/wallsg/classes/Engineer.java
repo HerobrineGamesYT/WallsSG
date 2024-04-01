@@ -20,6 +20,7 @@ import net.herobrine.gamecore.Class;
 import net.herobrine.wallsg.Config;
 import net.herobrine.wallsg.WallsMain;
 import net.herobrine.wallsg.game.Cannon;
+import net.herobrine.wallsg.game.Upgrades;
 import org.bukkit.*;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -51,10 +52,23 @@ public class Engineer extends Class {
 
     private boolean hasCannonPlaced = false;
     private List<Location> cannonBlockLocations = new ArrayList<>();
+
+    private List<Upgrades> upgrades = new ArrayList<>();
     private EditSession session;
     private long cooldown = 0;
     private long callbackCooldown = 0;
-    private double hitSpeed = 1.3;
+
+    private double baseHitSpeed = 1.3;
+
+    private double baseRange = 10.0;
+
+    private double range = baseRange;
+
+    private int baseDamage = 3;
+
+    private int damage = baseDamage;
+
+    private double hitSpeed = baseHitSpeed;
     private ArmorStand hologram;
     private ArmorStand hitSpeedStatus;
     private ArmorStand damageStatus;
@@ -153,10 +167,12 @@ public class Engineer extends Class {
             hitSpeedStatus.remove();
             damageStatus.remove();
             expiryStatus.remove();
+
             hologram = null;
             hitSpeedStatus = null;
             damageStatus = null;
             expiryStatus = null;
+
         }
         if (cannon != null) {
             stopFiring();
@@ -195,20 +211,22 @@ public class Engineer extends Class {
     }
 
 
+    public List<Upgrades> getUpgrades() {return upgrades;}
+
     public Location getFiringLocation(Location loc, String direction) {
         Vector vectorFromDespicableMe;
         switch(direction){
             case "NORTH":
-                vectorFromDespicableMe = new Vector(2,-1,-4);
+                vectorFromDespicableMe = new Vector(2.5,-1,-4.5);
                 break;
             case "SOUTH":
-                vectorFromDespicableMe = new Vector(-2,-1,4);
+                vectorFromDespicableMe = new Vector(-2.5,-1,4.5);
                 break;
             case "EAST":
-                vectorFromDespicableMe = new Vector(4,-1,2);
+                vectorFromDespicableMe = new Vector(4.5,-1,2.5);
                 break;
             default:
-                vectorFromDespicableMe = new Vector(-4,-1,-2);
+                vectorFromDespicableMe = new Vector(-4.5,-1,-2.5);
                 break;
         }
 
@@ -242,7 +260,7 @@ public class Engineer extends Class {
                         Player player = Bukkit.getPlayer(uuid);
 
                         if (cannon.isActive() && !cannon.getFriendlyTeam().equals(arena.getTeam(player))
-                                && !cannon.hasTarget()) {
+                                && !cannon.hasTarget() && !arena.getSpectators().contains(player.getUniqueId())) {
                             cannon.checkForTarget(player);
                         }
                     }
@@ -323,12 +341,42 @@ public class Engineer extends Class {
     public void upgradeCannonHitSpeed(double speedSeconds, Player player) {
         long newTime = Math.round(speedSeconds * 20);
         hitSpeed = speedSeconds;
-        stopFiring();
-        hitSpeedStatus.setCustomName(ChatColor.GREEN + "Hit Speed: " + ChatColor.AQUA + hitSpeed + "s");
+
         player.sendMessage(ChatColor.GREEN + "You upgraded your cannon's hitspeed to " + ChatColor.AQUA + hitSpeed + "s" + ChatColor.GREEN + "!");
         player.playSound(player.getLocation(), Sound.NOTE_PLING, 1f, 1.25f);
-        startFiring(newTime);
+
+        if (hasCannonPlaced) {
+            stopFiring();
+            hitSpeedStatus.setCustomName(ChatColor.GREEN + "Hit Speed: " + ChatColor.AQUA + hitSpeed + "s");
+            startFiring(newTime);
+        }
     }
+
+    public void upgradeCannonRange(Player player, double range) {
+        this.range = range;
+        player.sendMessage(ChatColor.GREEN + "You upgraded your cannon's range to " + ChatColor.AQUA + range + ChatColor.GREEN + "!");
+        player.playSound(player.getLocation(), Sound.NOTE_PLING, 1f, 1.25f);
+
+        if (hasCannonPlaced) {
+            cannon.setAttackRange(range);
+            cannon.setProjectileRange(range);
+        }
+
+    }
+
+    public void upgradeCannonDamage(Player player, int damage) {
+        this.damage = damage;
+        player.sendMessage(ChatColor.GREEN + "You upgraded your cannon's damage to " + ChatColor.AQUA + damage + ChatColor.GREEN + "!");
+        player.playSound(player.getLocation(), Sound.NOTE_PLING, 1f, 1.25f);
+        if (hasCannonPlaced) {
+            cannon.setDamage(damage);
+            damageStatus.setCustomName(ChatColor.translateAlternateColorCodes('&', "&aDamage: &b" + damage));
+        }
+    }
+
+    public int getBaseDamage() {return baseDamage;}
+    public double getBaseRange() {return baseRange;}
+    public double getBaseHitSpeed() {return baseHitSpeed;}
 
     public long getCannonHitSpeed(double speedSeconds) {
         long time = Math.round(speedSeconds * 20);
@@ -479,27 +527,27 @@ public class Engineer extends Class {
                     if(arena.getTeam(player).equals(Teams.GREEN)) getFiringLocation(pasteLoc, direction).getBlock().setData((byte) 5);
                     if(arena.getTeam(player).equals(Teams.YELLOW)) getFiringLocation(pasteLoc, direction).getBlock().setData((byte) 4);
 
-                    hologram = (ArmorStand) player.getWorld().spawnEntity(new Location(loc.getWorld(), getCenter(pasteLoc, direction).getX() + 0.5, getCenter(pasteLoc, direction).getY() + 3, getCenter(pasteLoc,direction).getZ() + 0.5), EntityType.ARMOR_STAND);
+                    hologram = (ArmorStand) player.getWorld().spawnEntity(new Location(loc.getWorld(), getCenter(pasteLoc, direction).getX() + 0.5, getCenter(pasteLoc, direction).getY() + 3.5, getCenter(pasteLoc,direction).getZ() + 0.5), EntityType.ARMOR_STAND);
 
                     hologram.setVisible(false);
                     hologram.setCustomNameVisible(true);
                     hologram.setCustomName(arena.getTeam(player).getColor() + player.getName() + "'s Cannon");
                     hologram.setGravity(false);
 
-                    hitSpeedStatus = (ArmorStand) player.getWorld().spawnEntity(new Location(loc.getWorld(), getCenter(pasteLoc, direction).getX() + 0.5, getCenter(pasteLoc, direction).getY() + 2, getCenter(pasteLoc,direction).getZ() + 0.5), EntityType.ARMOR_STAND);
+                    hitSpeedStatus = (ArmorStand) player.getWorld().spawnEntity(new Location(loc.getWorld(), getCenter(pasteLoc, direction).getX() + 0.5, getCenter(pasteLoc, direction).getY() + 2.5, getCenter(pasteLoc,direction).getZ() + 0.5), EntityType.ARMOR_STAND);
                     hitSpeedStatus.setVisible(false);
                     hitSpeedStatus.setCustomNameVisible(true);
                     hitSpeedStatus.setCustomName(ChatColor.translateAlternateColorCodes('&', "&aHit Speed: &b" + hitSpeed + "&bs"));
                     hitSpeedStatus.setGravity(false);
 
-                    damageStatus = (ArmorStand) player.getWorld().spawnEntity(new Location(loc.getWorld(), getCenter(pasteLoc, direction).getX() + 0.5, getCenter(pasteLoc, direction).getY() + 1, getCenter(pasteLoc,direction).getZ() + 0.5), EntityType.ARMOR_STAND);
+                    damageStatus = (ArmorStand) player.getWorld().spawnEntity(new Location(loc.getWorld(), getCenter(pasteLoc, direction).getX() + 0.5, getCenter(pasteLoc, direction).getY() + 1.5, getCenter(pasteLoc,direction).getZ() + 0.5), EntityType.ARMOR_STAND);
                     damageStatus.setVisible(false);
                     damageStatus.setCustomNameVisible(true);
-                    damageStatus.setCustomName(ChatColor.translateAlternateColorCodes('&', "&aDamage: &b3"));
+                    damageStatus.setCustomName(ChatColor.translateAlternateColorCodes('&', "&aDamage: &b" + damage));
                     damageStatus.setGravity(false);
 
 
-                    expiryStatus = (ArmorStand) player.getWorld().spawnEntity(new Location(loc.getWorld(), getCenter(pasteLoc, direction).getX() + 0.5, getCenter(pasteLoc, direction).getY() + 0.5, getCenter(pasteLoc, direction).getZ() + 0.5), EntityType.ARMOR_STAND);
+                    expiryStatus = (ArmorStand) player.getWorld().spawnEntity(new Location(loc.getWorld(), getCenter(pasteLoc, direction).getX() + 0.5, getCenter(pasteLoc, direction).getY() + 1, getCenter(pasteLoc, direction).getZ() + 0.5), EntityType.ARMOR_STAND);
                     expiryStatus.setVisible(false);
                     expiryStatus.setCustomNameVisible(true);
                     expiryStatus.setGravity(false);
@@ -517,8 +565,9 @@ public class Engineer extends Class {
                     callbackCooldown = System.currentTimeMillis();
 
                     if(cannon == null) cannon = new Cannon(Cannon.CannonType.NORMAL,"cannon" + player.getName(), arena.getID(), getFiringLocation(pasteLoc, direction), player, arena.getTeam(player),  true);
-
-                    cannon.setDamage(3);
+                    cannon.setDamage(damage);
+                    cannon.setAttackRange(range);
+                    cannon.setProjectileRange(range);
                     cannon.setShootLocation(getFiringLocation(pasteLoc, direction));
 
 

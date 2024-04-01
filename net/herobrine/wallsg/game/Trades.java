@@ -14,7 +14,8 @@ public enum Trades {
     // Make sure to keep the price here and in ShopItems the same. Can't get it directly due to a cross-reference error.
     DIRT_TRADE("Dirt Trade", Material.DIRT, 5, Material.COAL, 1, ChatColor.DARK_GRAY, ChatColor.DARK_GRAY),
     COBBLESTONE_TRADE("Cobblestone Trade", Material.COBBLESTONE, 8, Material.WOOD,16, ChatColor.GRAY, ChatColor.YELLOW),
-    OBSIDIAN_TRADE("Obsidian Trade", Material.OBSIDIAN, 5, Material.EMERALD, 2, ChatColor.DARK_PURPLE, ChatColor.GREEN);
+    OBSIDIAN_TRADE("Obsidian Trade", Material.OBSIDIAN, 5, Material.EMERALD, 2, ChatColor.DARK_PURPLE, ChatColor.GREEN),
+    REDSTONE_TRADE("Redstone Trade", Material.REDSTONE, 5, Material.EMERALD, 2, ChatColor.RED, ChatColor.GREEN);
 
 
 

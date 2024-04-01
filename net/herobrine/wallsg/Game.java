@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import net.herobrine.core.LevelRewards;
@@ -35,11 +36,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
+import org.bukkit.scoreboard.*;
 
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldedit.EditSession;
@@ -90,11 +87,12 @@ public class Game {
 	}
 
 	public void isGameOver() {
+		if (arena.getState().equals(GameState.LIVE_ENDING)) return;
 		WorldBorder border = net.herobrine.wallsg.Config.getArenaWorld(arena.getID()).getWorldBorder();
 
 		if (aliveBluePlayers == 0 && aliveGreenPlayers == 0 && aliveYellowPlayers == 0 && aliveRedPlayers >= 1) {
 // red wins
-
+			arena.setState(GameState.LIVE_ENDING);
 			winningTeam = Teams.RED;
 
 			for (UUID uuid : arena.getPlayers()) {
@@ -107,13 +105,13 @@ public class Game {
 
 			}
 
-			arena.setState(GameState.LIVE_ENDING);
+
 			startEnding(winningTeam.getDisplay());
 
 		}
 
 		else if (aliveRedPlayers == 0 && aliveYellowPlayers == 0 && aliveGreenPlayers == 0 && aliveBluePlayers >= 1) {
-
+			arena.setState(GameState.LIVE_ENDING);
 			winningTeam = Teams.BLUE;
 
 			for (UUID uuid : arena.getPlayers()) {
@@ -122,13 +120,14 @@ public class Game {
 				if (arena.getTeam(player) == winningTeam) SongPlayer.playSong(player, Songs.WSGWIN);
 				else SongPlayer.playSong(player, Songs.WSGLOSE);
 			}
-			arena.setState(GameState.LIVE_ENDING);
+
 
 			startEnding(winningTeam.getDisplay());
 
 		}
 
 		else if (aliveRedPlayers == 0 && aliveBluePlayers == 0 && aliveGreenPlayers == 0 && aliveYellowPlayers >= 1) {
+			arena.setState(GameState.LIVE_ENDING);
 			winningTeam = Teams.YELLOW;
 			for (UUID uuid : arena.getPlayers()) {
 				Player player = (Player) Bukkit.getPlayer(uuid);
@@ -142,6 +141,7 @@ public class Game {
 			// yellow wins
 
 		} else if (aliveRedPlayers == 0 && aliveBluePlayers == 0 && aliveYellowPlayers == 0 && aliveGreenPlayers >= 1) {
+			arena.setState(GameState.LIVE_ENDING);
 			winningTeam = Teams.GREEN;
 			for (UUID uuid : arena.getPlayers()) {
 				Player player = (Player) Bukkit.getPlayer(uuid);
@@ -164,13 +164,11 @@ public class Game {
 				border.setSize(100);
 				for (UUID uuid : arena.getPlayers()) {
 					Player player = Bukkit.getPlayer(uuid);
-
 					GameCoreMain.getInstance().sendTitle(player, "&c&lWATCH OUT!", "&eThe world border is shrinking!",
 							1, 2, 0);
-					player.getScoreboard().getTeam("wsgtimer").setPrefix(ChatColor.GREEN + "Game End ");
+					if (player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).getDisplayName().contains("Walls SG")) player.getScoreboard().getTeam("wsgtimer").setPrefix(ChatColor.GREEN + "Game End ");
 					player.playSound(player.getLocation(), Sound.ENDERDRAGON_GROWL, 1f, 1f);
-					player.sendMessage(
-							ChatColor.translateAlternateColorCodes('&', "&c&lThe World Border begins to shrink.."));
+					player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lThe World Border begins to shrink.."));
 				}
 
 				border.setDamageBuffer(0.0);
@@ -214,7 +212,7 @@ public class Game {
 	public void start() {
 		seconds = 300;
 		WorldBorder border = net.herobrine.wallsg.Config.getArenaWorld(arena.getID()).getWorldBorder();
-
+		ThreadLocalRandom random = ThreadLocalRandom.current();
 		aliveRedPlayers = 0;
 		aliveBluePlayers = 0;
 		aliveYellowPlayers = 0;
@@ -284,79 +282,46 @@ public class Game {
 			}
 
 			if (region.getWorld().getBlock(vector).getType() == 19) {
-
-				int randNum = new Random().nextInt(100 - 1 + 1) + 1;
-
-				if (randNum >= 1 && randNum <= 50) {
-
-					blockLocations.put(new Location(Bukkit.getWorld(region.getWorld().getName()), vector.getX(),
-							vector.getY(), vector.getZ()), Material.SPONGE);
-
-					// coal ore
-					world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ()))
-							.setType(Material.COAL_ORE);
-
-				} else {
-					blockLocations.put(new Location(Bukkit.getWorld(region.getWorld().getName()), vector.getX(),
-							vector.getY(), vector.getZ()), Material.SPONGE);
-					// iron ore
-					world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ()))
-							.setType(Material.IRON_ORE);
-				}
-
+				blockLocations.put(new Location(Bukkit.getWorld(region.getWorld().getName()), vector.getX(), vector.getY(), vector.getZ()), Material.SPONGE);
+				double dub = random.nextDouble();
+				// Iron/Coal 50/50;
+				if (dub <= .5)world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ())).setType(Material.COAL_ORE);
+				else world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ())).setType(Material.IRON_ORE);
 			} else if (region.getWorld().getBlock(vector).getType() == 103) {
-				int randNum = new Random().nextInt(100 - 1 + 1) + 1;
-
-				if (randNum >= 25) {
-					blockLocations.put(new Location(Bukkit.getWorld(region.getWorld().getName()), vector.getX(),
-							vector.getY(), vector.getZ()), Material.MELON_BLOCK);
-					// gold ore
-					world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ()))
-							.setType(Material.GOLD_ORE);
-
-				} else {
-					blockLocations.put(new Location(Bukkit.getWorld(region.getWorld().getName()), vector.getX(),
-							vector.getY(), vector.getZ()), Material.MELON_BLOCK);
-					// diamond ore
-					world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ()))
-							.setType(Material.DIAMOND_ORE);
-
-				}
+				// CHANCES:
+				// Diamond: 75%
+				// Gold: 25%
+				blockLocations.put(new Location(Bukkit.getWorld(region.getWorld().getName()), vector.getX(), vector.getY(), vector.getZ()), Material.MELON_BLOCK);
+				double dub = random.nextDouble();
+				if (dub <= .25) world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ())).setType(Material.GOLD_ORE);
+				else if (dub <= .75) world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ())).setType(Material.DIAMOND_ORE);
+				else world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ())).setType(Material.DIAMOND_ORE);
 
 			} else if (region.getWorld().getBlock(vector).getType() == 47) {
+				blockLocations.put(new Location(Bukkit.getWorld(region.getWorld().getName()), vector.getX(), vector.getY(), vector.getZ()), Material.BOOKSHELF);
+				double dub = random.nextDouble();
+				//VANILLA CHANCES
+				// LAPIS: 75%
+				// OBSIDIAN: 10%
+				// EMERALD: 15%
+				//MODIFIER CHANCES
+				// LAPIS: 65%
+				// EMERALD: 10%
+				// REDSTONE: 25%
 
-				int randNum = new Random().nextInt(100 - 1 + 1) + 1;
-
-				// LAPIS: 75% 1-75
-				// OBSIDIAN: 20% 76-95
-				// EMERALD: 5% 96-100
-
-				if (randNum <= 75) {
-					blockLocations.put(new Location(Bukkit.getWorld(region.getWorld().getName()), vector.getX(),
-							vector.getY(), vector.getZ()), Material.BOOKSHELF);
-					world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ()))
-							.setType(Material.LAPIS_ORE);
-					;
+				if (arena.getType().equals(GameType.VANILLA)) {
+					if (dub <=.10) world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ())).setType(Material.OBSIDIAN);
+					else if (dub <=.15) world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ())).setType(Material.EMERALD_ORE);
+					else if (dub <= .75) world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ())).setType(Material.LAPIS_ORE);
+					else world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ())).setType(Material.LAPIS_ORE);
 				}
 
-				else if (randNum >= 76 && randNum <= 95) {
-					blockLocations.put(new Location(Bukkit.getWorld(region.getWorld().getName()), vector.getX(),
-							vector.getY(), vector.getZ()), Material.BOOKSHELF);
-					region.getWorld().getBlock(vector).setType(49);
-
-					world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ()))
-							.setType(Material.OBSIDIAN);
-					;
+				if (arena.getType().equals(GameType.MODIFIER)) {
+					if (dub <= .10) world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ())).setType(Material.EMERALD_ORE);
+					else if (dub <=.25) world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ())).setType(Material.REDSTONE_ORE);
+					else if (dub<= .65) world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ())).setType(Material.LAPIS_ORE);
+					else world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ())).setType(Material.LAPIS_ORE);
 				}
-
-				else {
-					blockLocations.put(new Location(Bukkit.getWorld(region.getWorld().getName()), vector.getX(),
-							vector.getY(), vector.getZ()), Material.BOOKSHELF);
-					world.getBlockAt(new Location(world, vector.getX(), vector.getY(), vector.getZ()))
-							.setType(Material.EMERALD_ORE);
-					;
-				}
-
 			}
 
 		}
@@ -443,6 +408,10 @@ public class Game {
 				alivePlayers1.put(player.getUniqueId(), arena.getTeam(player));
 				Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 				Objective obj = board.registerNewObjective("game", "dummy");
+				Objective healthObj = board.registerNewObjective("wsgHP", "health");
+				healthObj.setDisplayName(ChatColor.RED + "❤");
+				healthObj.setDisplaySlot(DisplaySlot.BELOW_NAME);
+
 				obj.setDisplayName(ChatColor.YELLOW + "Walls SG");
 				obj.setDisplaySlot(DisplaySlot.SIDEBAR);
 
@@ -703,6 +672,11 @@ public class Game {
 			alivePlayers1.put(player.getUniqueId(), arena.getTeam(player));
 			Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 			Objective obj = board.registerNewObjective("game", "dummy");
+			Objective healthObj = board.registerNewObjective("wsgHP", "health");
+
+			healthObj.setDisplayName(ChatColor.RED + "❤");
+			healthObj.setDisplaySlot(DisplaySlot.BELOW_NAME);
+
 			obj.setDisplayName(ChatColor.YELLOW + "Walls SG");
 			obj.setDisplaySlot(DisplaySlot.SIDEBAR);
 
@@ -913,24 +887,31 @@ public class Game {
 
 			Player player = Bukkit.getPlayer(uuid);
 
-			if (arena.getTeam(player).getDisplay() == winningTeam
-					&& !winningTeam.equalsIgnoreCase(ChatColor.YELLOW + "DRAW!")) {
+			try {
+				if (arena.getTeam(player).getDisplay() == winningTeam
+						&& !winningTeam.equalsIgnoreCase(ChatColor.YELLOW + "DRAW!")) {
 
-				GameCoreMain.getInstance().sendTitle(player, "&6&lVICTORY", "&7Your team is the last one standing! ", 0,
-						3, 0);
+					GameCoreMain.getInstance().sendTitle(player, "&6&lVICTORY", "&7Your team is the last one standing! ", 0,
+							3, 0);
 
-				HerobrinePVPCore.getFileManager().setGameStats(player.getUniqueId(), Games.WALLS_SG, "wins",
-						HerobrinePVPCore.getFileManager().getGameStats(player.getUniqueId(), Games.WALLS_SG,
-								"wins") + 1);
+					HerobrinePVPCore.getFileManager().setGameStats(player.getUniqueId(), Games.WALLS_SG, "wins",
+							HerobrinePVPCore.getFileManager().getGameStats(player.getUniqueId(), Games.WALLS_SG,
+									"wins") + 1);
 
-			} else if (arena.getTeam(player).getDisplay() != winningTeam
-					&& !winningTeam.equalsIgnoreCase(ChatColor.YELLOW + "DRAW!")) {
-				GameCoreMain.getInstance().sendTitle(player, "&c&lGAME OVER", "&7Your team didn't win this time.", 0, 3,
-						0);
-			} else {
+				} else if (arena.getTeam(player).getDisplay() != winningTeam
+						&& !winningTeam.equalsIgnoreCase(ChatColor.YELLOW + "DRAW!")) {
+					GameCoreMain.getInstance().sendTitle(player, "&c&lGAME OVER", "&7Your team didn't win this time.", 0, 3,
+							0);
+				} else {
+					GameCoreMain.getInstance().sendTitle(player, "&e&lDRAW", "The game ended in a draw!", 0, 3, 0);
+					SongPlayer.playSong(player, Songs.WSGDRAW);
+				}
+			}
+			catch(NullPointerException e) {
 				GameCoreMain.getInstance().sendTitle(player, "&e&lDRAW", "The game ended in a draw!", 0, 3, 0);
 				SongPlayer.playSong(player, Songs.WSGDRAW);
 			}
+
 
 		}
 
@@ -1131,7 +1112,7 @@ public class Game {
 
 					for (UUID uuid : arena.getPlayers()) {
 						Player player = Bukkit.getPlayer(uuid);
-						player.getScoreboard().getTeam("wsgtimer").setPrefix(ChatColor.GREEN + "Sudden Death ");
+						if (player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).getDisplayName().contains("Walls SG")) player.getScoreboard().getTeam("wsgtimer").setPrefix(ChatColor.GREEN + "Sudden Death ");
 					}
 
 					seconds = 180;

@@ -2,6 +2,8 @@ package net.herobrine.wallsg.game;
 
 import java.util.Random;
 
+import net.herobrine.gamecore.Arena;
+import net.herobrine.gamecore.GameType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -12,7 +14,8 @@ public enum LootTables {
 	GOLD_INGOT(Material.GOLD_INGOT, 0, .25, 9, 10, 11, 12, .27, .33, .21, .19),
 	DIAMOND(Material.DIAMOND, 0, .14, 6, 7, 8, 9, .40, .30, .20, .10),
 	COAL(Material.COAL, 0, .15, 10, 11, 12, 13, .17, .18, .35, .30),
-	EMERALD(Material.EMERALD, 0, .06, 2, 3, 4, 5, .65, .20, .10, .05);
+	EMERALD(Material.EMERALD, 0, .06, 2, 3, 4, 5, .65, .20, .10, .05),
+	REDSTONE(Material.REDSTONE, 0, .10, 5, 8, 10, 15, .50, .25, .15, .10);
 
 	private Material material;
 	private int durability;
@@ -88,16 +91,15 @@ public enum LootTables {
 
 	public boolean shouldFill(Random random, double chance) { return random.nextDouble() < chance; }
 
-	public ItemStack make(Random random, LootTables table) {
+	public ItemStack make(Random random, LootTables table, Arena arena) {
 
+		if (table.getMaterial().equals(Material.REDSTONE) && !arena.getType().equals(GameType.MODIFIER)) table = LootTables.EMERALD;
 		if (random.nextDouble() < table.getStackSize1SpawnChance()) {
 
 			return new ItemStack(table.getMaterial(), table.getStackSize1(), (short) table.getDurability());
 		}
 
 		else if (random.nextDouble() < table.getStackSize2SpawnChance()) {
-			return new ItemStack(table.getMaterial(), table.getStackSize2(), (short) table.getDurability());
-		} else if (random.nextDouble() < table.getStackSize2SpawnChance()) {
 			return new ItemStack(table.getMaterial(), table.getStackSize2(), (short) table.getDurability());
 		}
 
