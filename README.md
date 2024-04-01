@@ -48,4 +48,7 @@ A video showcase of *some* of the below mechanics can be seen here: https://stre
   ![image](https://user-images.githubusercontent.com/74119793/198731320-49fc391d-45f1-4ce1-ba2b-75afd746127d.png)
 
  
- 
+ ![image](https://github.com/HerobrineGamesYT/WallsSG/assets/74119793/22b0f042-a1e1-46dd-8d83-1553a5ae7fc0)
+
+![image](https://github.com/HerobrineGamesYT/WallsSG/assets/74119793/afc964e8-20b9-47db-884a-21509dd0f918)
+
