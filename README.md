@@ -23,7 +23,7 @@ A video showcase of *some* of the below mechanics can be seen here: https://stre
   - Key (common->rarest): 
       - Sponge = Coal, Iron
       - Melon = Gold, Diamond
-      - Bookshelf = Lapis, Obsidian, Emerald
+      - Bookshelf = Lapis, Obsidian, Emerald, Redstone (Replaces Obsidian in modifier mode)
 ![image](https://user-images.githubusercontent.com/74119793/198732055-afa7a80a-6720-4a22-bebc-2d2f3908b989.png)
 
 
