@@ -17,7 +17,7 @@ Dependencies:
 
 Custom Gameplay Mechanics:
 
-A video showcase of *some* of the below mechanics can be seen here: https://streamable.com/hkt2kg (Apologies for any recording glitches)
+A video showcase of *some* of the below mechanics can be seen here: https://youtu.be/NPQrs4u8ybI 
 
 - Randomized Ore Generation - When the game starts, placeholder blocks are replaced with certain ore types at random. Some ores are guranteed, some are randomized! Different ore types are more common than others in different sections of each team's cave. Each team's cave has the same amount of resources.
   - Key (common->rarest): 
@@ -34,7 +34,7 @@ A video showcase of *some* of the below mechanics can be seen here: https://stre
 - Loot Chest Spawning - Once the Walls Fall, loot chests will spawn in the center of the map. Do you want to risk getting killed for better resources, rush the enemy teams, or stay back? 
 ![image](https://user-images.githubusercontent.com/74119793/198731426-5eee3c73-f9e9-4bbf-85e6-6ea76c249e6d.png)
 
-- Custom Sudden Death Mechanics: The World Border closes in to the center of the map for the last couple minutes of the game. Watch out! (https://streamable.com/yni27r Footage of an older version of the game utilizing this mechanic)
+- Custom Sudden Death Mechanics: The World Border closes in to the center of the map for the last couple minutes of the game. Watch out!
 
 ![image](https://user-images.githubusercontent.com/74119793/198730927-618f6192-769d-40d8-a982-12393bbbf419.png)
 - These custom in-game classes:
