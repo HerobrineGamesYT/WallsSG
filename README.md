@@ -4,7 +4,14 @@ Mine within your space to upgrade your gear before the walls fall. The NPCs outs
 
 This project has officially been in an on/off development state since sometime mid-to-late 2021. Though this was the first minigame that I ever WANTED to develop and made a super bare bones shell of a couple years prior but never finished. The base game was officially completed within a few weeks, but many updates and improvements to the game have come out since then. Latest update was done in October 2022, adding to Walls SG the special modifier gamemode and all the custom classes, support for my HerobrinePVP-CORE's new leveling system, and various other improvements.
 
-So yeah, if you see something looking wonky in the code, chances are I haven't touched that part for about a year+ and it will get refactored in the future.
+So yeah, if you see something looking wonky in the code, I haven't touched that part for about a year or more and it will get refactored in the future.
+
+Design notes:
+- This game mode is meant to be a more fast-paced version of The Walls, while also having a bit of an SG feel.
+- Recommended Player Count: Minimum 8 (2v2v2v2). While it is possible and fun to have 4 (1v1v1v1), the game is meant to be played with a team. 
+- Having the center chests, sudden death, and an SG/UHC style of combat makes the PVP feel much more fast-paced.
+- Additional strategies provided in the modifier mode such as the use of the Engineer cannon and its upgrades, allow for a competitive fast-paced game with a good amount of depth.
+- The different elements of the game (mining/prep, sg mechanics, fast-paced combat, diverse class types) allow the game to cater to different kinds of players.
 
 
 Dependencies:
